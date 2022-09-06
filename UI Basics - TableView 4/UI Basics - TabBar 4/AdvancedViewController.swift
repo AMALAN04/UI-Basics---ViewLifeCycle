@@ -17,7 +17,7 @@ class AdvancedViewController: UIViewController {
         tableView.rowHeight = 100
         return tableView
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemMint
@@ -35,14 +35,13 @@ class AdvancedViewController: UIViewController {
     func tableViewLaout() {
         view.addSubview(tableView)
         let constrains = [
-        tableView.topAnchor.constraint(equalTo: view.topAnchor),
-        view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: tableView.bottomAnchor),
-        tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-        tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: tableView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ]
         NSLayoutConstraint.activate(constrains)
     }
-
 }
 
 extension AdvancedViewController: UITableViewDelegate, UITableViewDataSource {
@@ -70,9 +69,9 @@ extension AdvancedViewController: UITableViewDelegate, UITableViewDataSource {
         let rootController =  SelectedCourseController()
         rootController.hidesBottomBarWhenPushed = true
         rootController.setDetails(image: courseImges[indexPath.row] ?? "doc", courseID: indexPath.row)
-//        let navController = UINavigationController(rootViewController: rootController )
-//        navController.modalPresentationStyle = .fullScreen
-//        present(navController, animated: true)
+        //        let navController = UINavigationController(rootViewController: rootController )
+        //        navController.modalPresentationStyle = .fullScreen
+        //        present(navController, animated: true)
         navigationController?.pushViewController(rootController, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }

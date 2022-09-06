@@ -10,14 +10,12 @@ import UIKit
 class TableViewCell: UITableViewCell {
     static let identifier = "Cell"
     
-    
-    
     let imageViewOnRight: UIImageView = {
         let imageViewOnRight = UIImageView()
         imageViewOnRight.translatesAutoresizingMaskIntoConstraints = false
         return imageViewOnRight
     }()
-
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style , reuseIdentifier: reuseIdentifier )
         layoutimageViewOnRight()
@@ -34,6 +32,5 @@ class TableViewCell: UITableViewCell {
             imageViewOnRight.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -2)
         ]
         NSLayoutConstraint.activate(constraints)
-        
     }
 }

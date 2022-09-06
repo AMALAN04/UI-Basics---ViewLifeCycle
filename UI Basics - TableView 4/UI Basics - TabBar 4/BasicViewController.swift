@@ -14,7 +14,7 @@ class BasicViewController: UIViewController {
         tableView.rowHeight = 100
         return tableView
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemMint
@@ -32,14 +32,13 @@ class BasicViewController: UIViewController {
     func tableViewLaout() {
         view.addSubview(tableView)
         let constrains = [
-        tableView.topAnchor.constraint(equalTo: view.topAnchor),
-        view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: tableView.bottomAnchor),
-        tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-        tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: tableView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ]
         NSLayoutConstraint.activate(constrains)
     }
-
 }
 
 extension BasicViewController: UITableViewDelegate, UITableViewDataSource {

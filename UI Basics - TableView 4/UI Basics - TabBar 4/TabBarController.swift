@@ -35,6 +35,4 @@ class TabBarController: UITabBarController {
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
-
-
 }
