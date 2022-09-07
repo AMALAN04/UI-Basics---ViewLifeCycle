@@ -45,6 +45,7 @@ class AdvancedViewController: UIViewController {
 }
 
 extension AdvancedViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         10
     }
