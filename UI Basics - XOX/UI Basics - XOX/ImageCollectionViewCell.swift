@@ -38,19 +38,12 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     func setImageContraints() {
         contentView.addSubview(imageView)
-//        let constraints = [
-//            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-//            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-//            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-//            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-//        ]
-//        NSLayoutConstraint.activate(constraints)
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
     }
     
-    
+
 }
 

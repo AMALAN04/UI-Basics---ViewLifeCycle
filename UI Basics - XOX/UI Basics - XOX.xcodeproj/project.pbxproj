@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B65ECCDF28CF02D90052CAB8 /* GameStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65ECCDE28CF02D90052CAB8 /* GameStatusProtocol.swift */; };
 		B65ECCE128CF03590052CAB8 /* GameStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65ECCE028CF03590052CAB8 /* GameStatus.swift */; };
+		B65ECCE328CF61820052CAB8 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65ECCE228CF61820052CAB8 /* HomeViewController.swift */; };
 		B6674EB528CB84A800196025 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6674EB428CB84A800196025 /* ImageCollectionViewCell.swift */; };
 		B6674EB728CBBD0C00196025 /* BoxStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6674EB628CBBD0C00196025 /* BoxStatus.swift */; };
 		B6AA697228CB4F000044832E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AA697128CB4F000044832E /* AppDelegate.swift */; };
@@ -21,6 +22,7 @@
 /* Begin PBXFileReference section */
 		B65ECCDE28CF02D90052CAB8 /* GameStatusProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStatusProtocol.swift; sourceTree = "<group>"; };
 		B65ECCE028CF03590052CAB8 /* GameStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStatus.swift; sourceTree = "<group>"; };
+		B65ECCE228CF61820052CAB8 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		B6674EB428CB84A800196025 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		B6674EB628CBBD0C00196025 /* BoxStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxStatus.swift; sourceTree = "<group>"; };
 		B6AA696E28CB4F000044832E /* UI Basics - XOX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UI Basics - XOX.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,6 +66,7 @@
 			children = (
 				B6AA697128CB4F000044832E /* AppDelegate.swift */,
 				B6AA697328CB4F000044832E /* SceneDelegate.swift */,
+				B65ECCE228CF61820052CAB8 /* HomeViewController.swift */,
 				B6AA697528CB4F000044832E /* ViewController.swift */,
 				B65ECCDE28CF02D90052CAB8 /* GameStatusProtocol.swift */,
 				B65ECCE028CF03590052CAB8 /* GameStatus.swift */,
@@ -149,6 +152,7 @@
 				B6674EB728CBBD0C00196025 /* BoxStatus.swift in Sources */,
 				B6AA697628CB4F000044832E /* ViewController.swift in Sources */,
 				B6AA697228CB4F000044832E /* AppDelegate.swift in Sources */,
+				B65ECCE328CF61820052CAB8 /* HomeViewController.swift in Sources */,
 				B65ECCE128CF03590052CAB8 /* GameStatus.swift in Sources */,
 				B65ECCDF28CF02D90052CAB8 /* GameStatusProtocol.swift in Sources */,
 				B6674EB528CB84A800196025 /* ImageCollectionViewCell.swift in Sources */,

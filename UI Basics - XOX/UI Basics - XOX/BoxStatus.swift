@@ -12,7 +12,7 @@ enum BoxStatus: Int, CaseIterable {
     case playerO
 }
 
-struct gameSummary {
+struct GameSummary {
     var matchWonByX: Int = 0
     var matchWonByY: Int = 0
     var noOfMatchDraw: Int = 0
