@@ -10,10 +10,10 @@ import UIKit
 class ImageCollectionViewCell: UICollectionViewCell {
     static let identifier = "Cell"
     var boxStatus:BoxStatus = .unownedPlace
-
+    
     let imageView: UIImageView = {
         let imageView = UIImageView()
-//        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         print("image loaded")
@@ -30,20 +30,19 @@ class ImageCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        imageView.frame = contentView.frame
-//        print("Frame Reset")
-    }
-    
     func setImageContraints() {
         contentView.addSubview(imageView)
+        let constraints = [
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+        ]
+        NSLayoutConstraint.activate(constraints)
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
     }
-    
-
 }
 

@@ -8,6 +8,7 @@
 import UIKit
 
 class HomeViewController: UIViewController {
+    
     var compactConstraints:[NSLayoutConstraint] = []
     var regularConstraints: [NSLayoutConstraint] = []
     
@@ -66,39 +67,20 @@ class HomeViewController: UIViewController {
     lazy var buttonStack: UIStackView = {
         let stackview = UIStackView()
         stackview.translatesAutoresizingMaskIntoConstraints = false
-        //        stackview.alignment = .center
         stackview.axis = .vertical
-        //        stackview.distribution = .fillEqually
         stackview.spacing = 3
         return stackview
     }()
-    
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        print("Orientation")
-        if UIDevice.current.userInterfaceIdiom == .phone { return .portrait } else { return .all }
-       }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         backGroundImageLayout()
         logoStackLayout()
-        loayoutConstraints()
+        loadLayoutConstraints()
         layoutTrait(traitCollection: UIScreen.main.traitCollection)
     }
     
-    @objc func startTapped() {
-        print("Start tapped")
-        let rootVc = ViewController()
-        let navController = UINavigationController(rootViewController: rootVc)
-        navController.modalPresentationStyle = .fullScreen
-        present(navController, animated: true)
-        
-    }
-    
-    override open var shouldAutorotate: Bool {
-        return false
-    }
-    func loayoutConstraints() {
+    func loadLayoutConstraints() {
         compactConstraints = [ quitButton.heightAnchor.constraint(equalToConstant: 50),
                                startButton.heightAnchor.constraint(equalToConstant: 50),
         ]
@@ -106,17 +88,6 @@ class HomeViewController: UIViewController {
         regularConstraints = [ quitButton.heightAnchor.constraint(equalToConstant: 80),
                                startButton.heightAnchor.constraint(equalToConstant: 80),
         ]
-    }
-    
-    @objc func exitPopUP() {
-        print("HAPPY")
-        let alert = UIAlertController(title: "Exit App", message: "Do you want to exit an App", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in
-        }))
-        alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
-            exit(0)
-        }))
-        present(alert, animated: true)
     }
     
     func backGroundImageLayout() {
@@ -144,17 +115,17 @@ class HomeViewController: UIViewController {
             logoStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 100),
             logoStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -100),
             
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
             startButton.leadingAnchor.constraint(equalTo: logoImageView.leadingAnchor),
             startButton.trailingAnchor.constraint(equalTo: logoImageView.trailingAnchor),
-            //            quitButton.heightAnchor.constraint(equalToConstant: 80),
-            //            startButton.heightAnchor.constraint(equalToConstant: 80),
-            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ]
         
         NSLayoutConstraint.activate(constraints)
     }
     
     func layoutTrait(traitCollection:UITraitCollection) {
+        
         if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
             if regularConstraints.count > 0 && regularConstraints[0].isActive {
                 print("RC - deactive")
@@ -179,4 +150,27 @@ class HomeViewController: UIViewController {
             NSLayoutConstraint.activate(regularConstraints)
         }
     }
+}
+
+extension HomeViewController {
+
+    @objc func exitPopUP() {
+        print("HAPPY")
+        let alert = UIAlertController(title: "Exit App", message: "Do you want to exit an App", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in
+        }))
+        alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
+            exit(0)
+        }))
+        present(alert, animated: true)
+    }
+    
+    @objc func startTapped() {
+        print("Start tapped")
+        let rootVc = ViewController()
+        let navController = UINavigationController(rootViewController: rootVc)
+        navController.modalPresentationStyle = .fullScreen
+        present(navController, animated: true)
+    }
+    
 }

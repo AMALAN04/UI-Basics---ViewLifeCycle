@@ -12,11 +12,25 @@ class ViewController: UIViewController {
     var gameStatusArray: [BoxStatus] = []
     var gameStatusDelegate: GameStatusProtoCol = GameStatus()
     
+    var leadingAnchor: NSLayoutConstraint?
+    var trailingAnchor: NSLayoutConstraint?
+    var topAnchor: NSLayoutConstraint?
+    var bottomAnchor: NSLayoutConstraint?
+    var widthAnchor: NSLayoutConstraint?
+    
+    lazy var animateView: UIView = {
+        let animatedView = UIView()
+        animatedView.translatesAutoresizingMaskIntoConstraints = false
+        animatedView.layer.cornerRadius = 5
+        animatedView.backgroundColor = .red
+        return animatedView
+        
+    }()
+    
     lazy var gameTitle: UILabel = {
         let gameTitle = UILabel()
         gameTitle.font = .preferredFont(forTextStyle: .largeTitle)
         gameTitle.translatesAutoresizingMaskIntoConstraints = false
-//        gameTitle.font = .systemFont(ofSize: 40)
         gameTitle.textColor = .label
         gameTitle.text =  "..TIC TAC TOE.."
         return gameTitle
@@ -48,11 +62,8 @@ class ViewController: UIViewController {
         winsByX.translatesAutoresizingMaskIntoConstraints = false
         winsByX.adjustsFontSizeToFitWidth = true
         winsByX.minimumScaleFactor = 0.5
-//        winsByX.backgroundColor = .blue
         winsByX.numberOfLines = 0
         winsByX.lineBreakMode = .byClipping
-        
-//        winsByX.font = .systemFont(ofSize: 20)
         winsByX.sizeToFit()
         winsByX.text = "X = \(gameSummary.matchWonByX)"
         winsByX.textColor = .label
@@ -65,7 +76,6 @@ class ViewController: UIViewController {
         winsByY.translatesAutoresizingMaskIntoConstraints = false
         winsByY.adjustsFontSizeToFitWidth = true
         winsByY.numberOfLines = 0
-//        winsByY.font = .systemFont(ofSize: 20)
         winsByY.sizeToFit()
         winsByY.text = "Y = \(gameSummary.matchWonByY)"
         winsByY.textColor = .label
@@ -78,7 +88,6 @@ class ViewController: UIViewController {
         draw.translatesAutoresizingMaskIntoConstraints = false
         draw.adjustsFontSizeToFitWidth = true
         draw.numberOfLines =  0
-//        draw.font = .systemFont(ofSize: 20)
         draw.sizeToFit()
         draw.text = "D = \(gameSummary.noOfMatchDraw)"
         draw.textColor = .label
@@ -90,7 +99,6 @@ class ViewController: UIViewController {
         stackview.translatesAutoresizingMaskIntoConstraints = false
         stackview.alignment = .center
         stackview.axis = .horizontal
-//        stackview.spacing = 5
         stackview.distribution = .equalSpacing
         return stackview
     }()
@@ -103,7 +111,6 @@ class ViewController: UIViewController {
     }()
     
     var collectionView: UICollectionView = {
-        //        let layout = UICollectionViewFlowLayout()
         let layout = createCompositeLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .systemBackground
@@ -115,7 +122,7 @@ class ViewController: UIViewController {
         let backButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
         return backButton
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -128,14 +135,31 @@ class ViewController: UIViewController {
         summaryLayout()
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        NSLayoutConstraint.deactivate(squareFrame.constraints)
+        addsquareFrameconstraints()
+        collectionViewLayout()
+    }
+    
     static func createCompositeLayout() -> UICollectionViewCompositionalLayout {
         let leadingItem = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
         leadingItem.contentInsets = NSDirectionalEdgeInsets(top: 1, leading: 1, bottom: 1, trailing: 1)
         let leadingGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)), subitem: leadingItem, count: 3)
         let trailingGroup = NSCollectionLayoutGroup.vertical(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)), subitem: leadingGroup, count: 3)
-
+        
         let section = NSCollectionLayoutSection(group: trailingGroup)
         return UICollectionViewCompositionalLayout(section: section)
+    }
+    
+    func calculateSquareFrameDimension() -> CGFloat {
+        let textViewHeight = view.safeAreaLayoutGuide.layoutFrame.height / 4
+        var squareDimension = view.safeAreaLayoutGuide.layoutFrame.height - textViewHeight
+        let viewWidth = view.safeAreaLayoutGuide.layoutFrame.width
+        if squareDimension > viewWidth {
+            squareDimension = viewWidth
+        }
+        return squareDimension
     }
     
     func loadStatusArray () -> [BoxStatus] {
@@ -151,7 +175,6 @@ class ViewController: UIViewController {
         let squareDimension = calculateSquareFrameDimension()
         print("Before change \(squareDimension)")
         let constraints = [
-//          squareFrame.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             squareFrame.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             squareFrame.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             squareFrame.heightAnchor.constraint(equalToConstant: squareDimension),
@@ -160,33 +183,21 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
-    func calculateSquareFrameDimension() -> CGFloat {
-        let textViewHeight = view.safeAreaLayoutGuide.layoutFrame.height / 4
-        var squareDimension = view.safeAreaLayoutGuide.layoutFrame.height - textViewHeight
-        let viewWidth = view.safeAreaLayoutGuide.layoutFrame.width
-        if squareDimension > viewWidth {
-            squareDimension = viewWidth
-        }
-        return squareDimension
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        NSLayoutConstraint.deactivate(squareFrame.constraints)
-        addsquareFrameconstraints()
-        collectionViewLayout()
+    func configureCollectionView() {
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: ImageCollectionViewCell.identifier)
     }
     
     func titleViewLayout() {
         view.addSubview(titleStackView)
         titleStackView.addArrangedSubview(gameTitle)
         titleStackView.addArrangedSubview(turnTitle)
-
+        
         let constraints = [
             titleStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             titleStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleStackView.bottomAnchor.constraint(equalTo: squareFrame.topAnchor)
- 
         ]
         NSLayoutConstraint.activate(constraints)
     }
@@ -220,13 +231,6 @@ class ViewController: UIViewController {
         ]
         NSLayoutConstraint.activate(constraints)
     }
-    
-    func configureCollectionView() {
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: ImageCollectionViewCell.identifier)
-    }
-
 }
 
 
@@ -252,20 +256,24 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
             cell?.imageView.image = UIImage(named: "x.png")?.withTintColor(.systemBlue, renderingMode: .alwaysTemplate)
             cell?.boxStatus = .playerX
             gameStatusArray[indexPath.row] = .playerX
-            if let winner = gameStatusDelegate.checkVictory(cells: gameStatusArray) {
+            let winnerDetails = gameStatusDelegate.checkVictory(cells: gameStatusArray)
+            if let winner = winnerDetails.winnerTeam {
                 print(winner)
                 gameSummary.matchWonByX = gameSummary.matchWonByX + 1
-                pushPopUp(title: "WINNER:\"X\"")
+                handleTapAnimations(possible: winnerDetails.possible!, winnerTeam: "Winner X")
+//                pushPopUp(title: "WINNER:\"X\"")
             }
             turnTitle.text = "-O-"
         } else {
             cell?.imageView.image = UIImage(named: "o.png")?.withTintColor(.systemBlue, renderingMode: .alwaysTemplate)
             cell?.boxStatus = .playerO
             gameStatusArray[indexPath.row] = .playerO
-            if let winner = gameStatusDelegate.checkVictory(cells: gameStatusArray) {
+            let winnerDetails = gameStatusDelegate.checkVictory(cells: gameStatusArray)
+            if let winner = winnerDetails.winnerTeam {
                 print(winner)
                 gameSummary.matchWonByY = gameSummary.matchWonByY + 1
-                pushPopUp(title: "WINNER:\"O\"")
+                handleTapAnimations(possible: winnerDetails.possible!, winnerTeam: "Winner O")
+//                pushPopUp(title: "WINNER:\"O\"")
             }
             turnTitle.text = "-X-"
         }
@@ -278,18 +286,9 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         
     }
-    
-    func pushPopUp(title: String) {
-        let alert = UIAlertController(title: title, message: "Do you like to restart the game ?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] action in
-            self?.ContinueGame()
-        }))
-        alert.addAction(UIAlertAction(title: "No", style: .destructive, handler: { [weak self] action in
-            self?.reloadGame()// pop this screen
-        }))
-        
-        present(alert, animated: true)
-    }
+}
+
+extension ViewController {
     
     @objc func cancelTapped() {
         let alert = UIAlertController(title: title, message: "..TIC TAC TOE..", preferredStyle: .alert)
@@ -301,13 +300,20 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         present(alert, animated: true)
     }
     
-    override func reloadInputViews() {
-        super.reloadInputViews()
-        print("reload input views")
+    func pushPopUp(title: String) {
+        let alert = UIAlertController(title: title, message: "Do you like to restart the game ?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "No", style: .destructive, handler: { [weak self] action in
+            self?.reloadGame()// pop this screen
+        }))
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] action in
+            self?.ContinueGame()
+        }))
+        present(alert, animated: true)
     }
     
     func ContinueGame() {
         gameStatusArray = loadStatusArray()
+        animateView.removeFromSuperview()
         gameSummary.playerFlag = true
         turnTitle.text = "-X-"
         winsByX.text = "X = \(gameSummary.matchWonByX)"
@@ -319,17 +325,126 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
             cellValue?.boxStatus = .unownedPlace
         }
         print(gameStatusArray)
-        
-
-        
     }
     
     func reloadGame() {
         self.dismiss(animated: true)
-//                let rootVc = ViewController()
-//                let navController = UINavigationController(rootViewController: rootVc)
-//                navController.modalPresentationStyle = .fullScreen
-//                present(navController, animated:  true)
     }
     
+    func animateViewLayout() {
+        collectionView.addSubview(animateView)
+
+        leadingAnchor = animateView.leadingAnchor.constraint(equalTo: squareFrame.leadingAnchor, constant: 0)
+        trailingAnchor = animateView.trailingAnchor.constraint(equalTo: animateView.leadingAnchor, constant: 10)
+        topAnchor = animateView.topAnchor.constraint(equalTo: squareFrame.topAnchor)
+        bottomAnchor = animateView.bottomAnchor.constraint(equalTo: animateView.topAnchor, constant: 10)
+
+        let constraints = [
+
+            leadingAnchor!,
+            trailingAnchor!,
+            topAnchor!,
+            bottomAnchor!,
+        ]
+        NSLayoutConstraint.activate(constraints)
+    }
+    
+    fileprivate func handleTapAnimations(possible: WinnerPossibilities, winnerTeam: String) {
+        print("Animating")
+        var rotate1: Int?
+        var rotate2: Int?
+        var moveByConst: Double?
+        var completetionCondition: Bool = false
+        var moveAnchor: MoveAnchor?
+        
+        
+        
+        switch possible {
+        case .horizontalTop:
+            rotate1 = 2
+            rotate2 = 2
+            moveByConst = calculateSquareFrameDimension() / 6
+            completetionCondition =  true
+            moveAnchor = .top
+            
+            print("H1 hai")
+        case .horizontalMiddle:
+            rotate1 = 2
+            rotate2 = 2
+//            moveByConst = calculateSquareFrameDimension() - calculateSquareFrameDimension() / 6
+            completetionCondition =  false
+            print("hai")
+        case .horizontalBottom:
+            rotate1 = 2
+            rotate2 = 2
+            moveByConst = calculateSquareFrameDimension() - calculateSquareFrameDimension() / 6
+            completetionCondition =  true
+            moveAnchor = .top
+            print("hai")
+        case .verticalTop:
+            rotate1 = 2
+            rotate2 = 1
+            moveByConst = -calculateSquareFrameDimension() / 3
+            print(moveByConst)
+            completetionCondition =  true
+            moveAnchor = .leading
+            print("hai")
+        case .verticalMiddle:
+            rotate1 = 2
+            rotate2 = 1
+//            moveByConst = calculateSquareFrameDimension() / 6
+            completetionCondition =  false
+            print("hai")
+        case .verticalBottom:
+            rotate1 = 2
+            rotate2 = 1
+            moveByConst =    calculateSquareFrameDimension() / 3
+            print(moveByConst)
+            completetionCondition =  true
+            moveAnchor = .leading
+            print("hai")
+        case .diagnolForwardBend:
+            rotate1 = 2
+            rotate2 = 4
+            completetionCondition =  false
+            print("hai")
+        case .diagnolBackwardBend:
+            rotate1 = 1
+            rotate2 = 4
+            completetionCondition =  false
+            print("hai")
+        }
+        animateView.transform = CGAffineTransform.identity;
+        NSLayoutConstraint.deactivate(animateView.constraints)
+        animateViewLayout()
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveLinear, animations: {
+            self.trailingAnchor?.constant = self.squareFrame.frame.width //left to right
+            self.topAnchor?.constant = self.squareFrame.frame.height / 2
+            self.animateView.transform = self.animateView.transform.rotated(by: CGFloat.pi / CGFloat(rotate1!))
+            self.animateView.transform = self.animateView.transform.rotated(by: CGFloat.pi / CGFloat(rotate2!))
+            self.loadViewIfNeeded()
+        }, completion: {_ in
+            nextAnimate(winnerTeam: winnerTeam)
+        })
+        
+        func nextAnimate(winnerTeam: String) {
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+                self.view.layoutIfNeeded()
+                if completetionCondition {
+                    if moveAnchor == .top {
+                        print("Happy to move")
+                        print(moveByConst!)
+                self.topAnchor?.constant = moveByConst!
+                    } else {
+                    self.leadingAnchor?.constant = moveByConst!
+                }
+                }
+               
+            }, completion: {_ in
+                sleep(1)
+                self.pushPopUp(title: "\(winnerTeam)")
+            })
+        }
+    }
 }

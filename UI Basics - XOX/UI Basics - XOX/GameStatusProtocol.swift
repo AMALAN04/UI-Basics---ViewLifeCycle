@@ -10,5 +10,5 @@ import UIKit
  
 protocol GameStatusProtoCol {
     func gameCompleted(cells: [BoxStatus]) -> Bool
-    func checkVictory(cells: [BoxStatus]) -> BoxStatus? 
+    func checkVictory(cells: [BoxStatus]) -> (winnerTeam: BoxStatus?, possible: WinnerPossibilities?)
 }

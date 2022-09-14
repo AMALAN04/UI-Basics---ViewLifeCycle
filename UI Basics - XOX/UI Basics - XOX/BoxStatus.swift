@@ -18,3 +18,19 @@ struct GameSummary {
     var noOfMatchDraw: Int = 0
     var playerFlag: Bool = true
 }
+
+enum WinnerPossibilities {
+    case horizontalTop
+    case horizontalMiddle
+    case horizontalBottom
+    case verticalTop
+    case verticalMiddle
+    case verticalBottom
+    case diagnolForwardBend
+    case diagnolBackwardBend
+}
+
+enum MoveAnchor {
+    case top
+    case leading
+}
