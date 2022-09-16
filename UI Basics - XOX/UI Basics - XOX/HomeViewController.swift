@@ -34,7 +34,6 @@ class HomeViewController: UIViewController {
         let startButton = UIButton()
         startButton.translatesAutoresizingMaskIntoConstraints = false
         startButton.setTitle("START", for: .normal)
-        
         startButton.titleLabel?.adjustsFontSizeToFitWidth = true
         startButton.titleLabel?.minimumScaleFactor = 0.2
         startButton.titleLabel?.numberOfLines = 1
@@ -45,15 +44,15 @@ class HomeViewController: UIViewController {
         return startButton
     }()
     
-    lazy var quitButton: UIButton = {
-        let quitButton = UIButton()
-        quitButton.translatesAutoresizingMaskIntoConstraints = false
-        quitButton.setTitle("QUIT", for: .normal)
-        quitButton.backgroundColor = .systemRed
-        quitButton.addTarget(self, action: #selector(exitPopUP), for: .touchUpInside)
-        //        quitButton.layer.cornerRadius = 25
-        return quitButton
-    }()
+//    lazy var quitButton: UIButton = {
+//        let quitButton = UIButton()
+//        quitButton.translatesAutoresizingMaskIntoConstraints = false
+//        quitButton.setTitle("QUIT", for: .normal)
+//        quitButton.backgroundColor = .systemRed
+//        quitButton.addTarget(self, action: #selector(exitPopUP), for: .touchUpInside)
+//        //        quitButton.layer.cornerRadius = 25
+//        return quitButton
+//    }()
     
     lazy var logoStack: UIStackView = {
         let stackview = UIStackView()
@@ -81,12 +80,10 @@ class HomeViewController: UIViewController {
     }
     
     func loadLayoutConstraints() {
-        compactConstraints = [ quitButton.heightAnchor.constraint(equalToConstant: 50),
-                               startButton.heightAnchor.constraint(equalToConstant: 50),
+        compactConstraints = [ startButton.heightAnchor.constraint(equalToConstant: 50),
         ]
         
-        regularConstraints = [ quitButton.heightAnchor.constraint(equalToConstant: 80),
-                               startButton.heightAnchor.constraint(equalToConstant: 80),
+        regularConstraints = [ startButton.heightAnchor.constraint(equalToConstant: 80),
         ]
     }
     
@@ -108,7 +105,6 @@ class HomeViewController: UIViewController {
         logoStack.addArrangedSubview(logoImageView)
         
         buttonStack.addArrangedSubview(startButton)
-        buttonStack.addArrangedSubview(quitButton)
         print( (view.frame.width - 200) / 4)
         let constraints = [
             logoStack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -132,9 +128,7 @@ class HomeViewController: UIViewController {
                 NSLayoutConstraint.deactivate(regularConstraints)
             }
             startButton.titleLabel?.font = UIFont(name: "Helvetica", size: 20)
-            quitButton.titleLabel?.font = UIFont(name: "Helvetica", size: 20)
             startButton.layer.cornerRadius = 25
-            quitButton.layer.cornerRadius = 25
             print("CC - Active")
             NSLayoutConstraint.activate(compactConstraints)
         } else {
@@ -144,9 +138,7 @@ class HomeViewController: UIViewController {
             }
             print("RC - Active")
             startButton.titleLabel?.font = UIFont(name: "Helvetica", size: 40)
-            quitButton.titleLabel?.font = UIFont(name: "Helvetica", size: 40)
             startButton.layer.cornerRadius = 40
-            quitButton.layer.cornerRadius = 40
             NSLayoutConstraint.activate(regularConstraints)
         }
     }
@@ -172,5 +164,4 @@ extension HomeViewController {
         navController.modalPresentationStyle = .fullScreen
         present(navController, animated: true)
     }
-    
 }

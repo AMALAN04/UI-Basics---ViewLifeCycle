@@ -14,8 +14,8 @@
             filePath = "UI Basics - XOX/HomeViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
             landmarkName = "buttonStack"
             landmarkType = "24">
          </BreakpointContent>
@@ -23,16 +23,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "88519AB1-B194-48D0-9AE0-CE5C42BDC378"
+            uuid = "47CC9E12-F901-4D4E-9208-70527414D379"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UI Basics - XOX/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "396"
-            endingLineNumber = "396"
-            landmarkName = "handleTapAnimations(possible:winnerTeam:)"
+            startingLineNumber = "419"
+            endingLineNumber = "419"
+            landmarkName = "handleTapAnimations(possible:winnerTeam:lastItem:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "162B440E-A545-46B2-A7BF-A367218B7A79"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UI Basics - XOX/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "479"
+            endingLineNumber = "479"
+            landmarkName = "handleTapAnimations(possible:winnerTeam:lastItem:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

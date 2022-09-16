@@ -11,12 +11,15 @@ class ViewController: UIViewController {
     var gameSummary = GameSummary()
     var gameStatusArray: [BoxStatus] = []
     var gameStatusDelegate: GameStatusProtoCol = GameStatus()
+    var lineThickness:Double = 8
+    static var noOfWinner = 0
     
     var leadingAnchor: NSLayoutConstraint?
     var trailingAnchor: NSLayoutConstraint?
     var topAnchor: NSLayoutConstraint?
     var bottomAnchor: NSLayoutConstraint?
     var widthAnchor: NSLayoutConstraint?
+    var shapeLayer:CAShapeLayer?
     
     lazy var animateView: UIView = {
         let animatedView = UIView()
@@ -24,7 +27,6 @@ class ViewController: UIViewController {
         animatedView.layer.cornerRadius = 5
         animatedView.backgroundColor = .red
         return animatedView
-        
     }()
     
     lazy var gameTitle: UILabel = {
@@ -77,7 +79,7 @@ class ViewController: UIViewController {
         winsByY.adjustsFontSizeToFitWidth = true
         winsByY.numberOfLines = 0
         winsByY.sizeToFit()
-        winsByY.text = "Y = \(gameSummary.matchWonByY)"
+        winsByY.text = "O = \(gameSummary.matchWonByY)"
         winsByY.textColor = .label
         return winsByY
     }()
@@ -114,6 +116,7 @@ class ViewController: UIViewController {
         let layout = createCompositeLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .systemBackground
+        collectionView.isScrollEnabled = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
@@ -140,6 +143,7 @@ class ViewController: UIViewController {
         NSLayoutConstraint.deactivate(squareFrame.constraints)
         addsquareFrameconstraints()
         collectionViewLayout()
+        lineThickness = calculateSquareFrameDimension() / 60
     }
     
     static func createCompositeLayout() -> UICollectionViewCompositionalLayout {
@@ -214,8 +218,8 @@ class ViewController: UIViewController {
             gameSummaryStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             gameSummaryStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             gameSummaryStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            winsByX.leadingAnchor.constraint(equalTo: gameSummaryStack.leadingAnchor),
-            winsByY.trailingAnchor.constraint(equalTo: gameSummaryStack.trailingAnchor),
+            winsByX.leadingAnchor.constraint(equalTo: gameSummaryStack.leadingAnchor, constant: 2),
+            winsByY.trailingAnchor.constraint(equalTo: gameSummaryStack.trailingAnchor, constant: -2),
             draw.centerXAnchor.constraint(equalTo: gameSummaryStack.centerXAnchor)
         ]
         NSLayoutConstraint.activate(constraints)
@@ -232,7 +236,6 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
 }
-
 
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -259,9 +262,9 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
             let winnerDetails = gameStatusDelegate.checkVictory(cells: gameStatusArray)
             if let winner = winnerDetails.winnerTeam {
                 print(winner)
-                gameSummary.matchWonByX = gameSummary.matchWonByX + 1
-                handleTapAnimations(possible: winnerDetails.possible!, winnerTeam: "Winner X")
-//                pushPopUp(title: "WINNER:\"X\"")
+                handleTapAnimations(possible: winnerDetails.possible!, winnerTeam: "Winner \"X\"", lastItem: indexPath.row)
+                updateMatchesWon(player: .playerX)
+                //                pushPopUp(title: "WINNER:\"X\"")
             }
             turnTitle.text = "-O-"
         } else {
@@ -271,9 +274,10 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
             let winnerDetails = gameStatusDelegate.checkVictory(cells: gameStatusArray)
             if let winner = winnerDetails.winnerTeam {
                 print(winner)
-                gameSummary.matchWonByY = gameSummary.matchWonByY + 1
-                handleTapAnimations(possible: winnerDetails.possible!, winnerTeam: "Winner O")
-//                pushPopUp(title: "WINNER:\"O\"")
+                print("LAST ITEM: \(indexPath.row)")
+                handleTapAnimations(possible: winnerDetails.possible!, winnerTeam: "Winner \"O\"", lastItem: indexPath.row)
+                updateMatchesWon(player: .playerO)
+                //                pushPopUp(title: "WINNER:\"O\"")
             }
             turnTitle.text = "-X-"
         }
@@ -286,6 +290,18 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         
     }
+    
+    func updateMatchesWon(player: BoxStatus) {
+        guard ViewController.noOfWinner == 0 else {
+            return
+        }
+        if player == .playerX {
+            gameSummary.matchWonByX = gameSummary.matchWonByX + 1
+        } else {
+            gameSummary.matchWonByY = gameSummary.matchWonByY + 1
+        }
+        
+    }
 }
 
 extension ViewController {
@@ -295,17 +311,17 @@ extension ViewController {
         alert.addAction(UIAlertAction(title: "Continue", style: .default, handler: { _ in
         }))
         alert.addAction(UIAlertAction(title: "Quit", style: .destructive, handler: { [weak self] action in
-            self?.reloadGame()// pop this screen
+            self?.reloadGame()
         }))
         present(alert, animated: true)
     }
     
     func pushPopUp(title: String) {
-        let alert = UIAlertController(title: title, message: "Do you like to restart the game ?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "No", style: .destructive, handler: { [weak self] action in
-            self?.reloadGame()// pop this screen
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Home", style: .destructive, handler: { [weak self] action in
+            self?.reloadGame()
         }))
-        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] action in
+        alert.addAction(UIAlertAction(title: "Play Again", style: .default, handler: { [weak self] action in
             self?.ContinueGame()
         }))
         present(alert, animated: true)
@@ -314,10 +330,12 @@ extension ViewController {
     func ContinueGame() {
         gameStatusArray = loadStatusArray()
         animateView.removeFromSuperview()
+        ViewController.noOfWinner = 0
+        collectionView.isUserInteractionEnabled  = true
         gameSummary.playerFlag = true
         turnTitle.text = "-X-"
         winsByX.text = "X = \(gameSummary.matchWonByX)"
-        winsByY.text = "Y = \(gameSummary.matchWonByY)"
+        winsByY.text = "O = \(gameSummary.matchWonByY)"
         draw.text = "D = \(gameSummary.noOfMatchDraw)"
         for item in 0..<collectionView.numberOfItems(inSection: 0) {
             let cellValue =  collectionView.cellForItem(at: IndexPath(item: item, section: 0)) as? ImageCollectionViewCell
@@ -333,14 +351,13 @@ extension ViewController {
     
     func animateViewLayout() {
         collectionView.addSubview(animateView)
-
+        
         leadingAnchor = animateView.leadingAnchor.constraint(equalTo: squareFrame.leadingAnchor, constant: 0)
         trailingAnchor = animateView.trailingAnchor.constraint(equalTo: animateView.leadingAnchor, constant: 10)
         topAnchor = animateView.topAnchor.constraint(equalTo: squareFrame.topAnchor)
         bottomAnchor = animateView.bottomAnchor.constraint(equalTo: animateView.topAnchor, constant: 10)
-
+        
         let constraints = [
-
             leadingAnchor!,
             trailingAnchor!,
             topAnchor!,
@@ -349,102 +366,125 @@ extension ViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
-    fileprivate func handleTapAnimations(possible: WinnerPossibilities, winnerTeam: String) {
-        print("Animating")
-        var rotate1: Int?
-        var rotate2: Int?
-        var moveByConst: Double?
-        var completetionCondition: Bool = false
-        var moveAnchor: MoveAnchor?
-        
-        
-        
+    private func constructScaleAnimation(startingScale: CGFloat, endingScale: CGFloat, animationDuration: Double) -> CABasicAnimation {
+        let scaleAnimation = CABasicAnimation(keyPath: "transform.scale")
+        scaleAnimation.fromValue = startingScale
+        scaleAnimation.toValue = endingScale
+        scaleAnimation.duration = animationDuration
+        scaleAnimation.autoreverses = true
+        scaleAnimation.repeatCount = 3
+        return scaleAnimation
+    }
+    private func constructPositionAnimation(startingPoint: CGPoint, endPoint: CGPoint, animationDuration: Double) -> CABasicAnimation {
+        let positionAnimation = CABasicAnimation(keyPath: "position")
+        positionAnimation.fromValue = NSValue(cgPoint: startingPoint)
+        positionAnimation.toValue = NSValue(cgPoint: endPoint)
+        positionAnimation.duration = animationDuration
+        positionAnimation.autoreverses = true
+        positionAnimation.repeatCount = Float.infinity
+        positionAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        return positionAnimation
+    }
+    
+    func findCell(item: Int, section: Int) -> UICollectionViewCell? {
+        let cell = collectionView.cellForItem(at: IndexPath(item: item, section: section))
+        return cell
+    }
+    
+    func handleTapAnimations(possible: WinnerPossibilities, winnerTeam: String, lastItem: Int) {
+        var cellStating: UICollectionViewCell? = nil
+        var cellEnding: UICollectionViewCell? = nil
+        guard ViewController.noOfWinner == 0 else {
+            return
+        }
+        collectionView.isUserInteractionEnabled  = false
+        ViewController.noOfWinner = ViewController.noOfWinner + 1
+        cellEnding =  findCell(item: lastItem, section: 0)
         switch possible {
         case .horizontalTop:
-            rotate1 = 2
-            rotate2 = 2
-            moveByConst = calculateSquareFrameDimension() / 6
-            completetionCondition =  true
-            moveAnchor = .top
-            
-            print("H1 hai")
+            if(lastItem == 2) {
+            cellStating = findCell(item: 0, section: 0)
+            } else {
+                cellStating = findCell(item: 2, section: 0)
+            }
+            print("H1")
         case .horizontalMiddle:
-            rotate1 = 2
-            rotate2 = 2
-//            moveByConst = calculateSquareFrameDimension() - calculateSquareFrameDimension() / 6
-            completetionCondition =  false
-            print("hai")
+            if(lastItem == 5) {
+            cellStating = findCell(item: 3, section: 0)
+            } else {
+                cellStating = findCell(item: 5, section: 0)
+            }
+            print("H2")
         case .horizontalBottom:
-            rotate1 = 2
-            rotate2 = 2
-            moveByConst = calculateSquareFrameDimension() - calculateSquareFrameDimension() / 6
-            completetionCondition =  true
-            moveAnchor = .top
-            print("hai")
+            if(lastItem == 8) {
+            cellStating = findCell(item: 6, section: 0)
+            } else {
+                cellStating = findCell(item: 8, section: 0)
+            }
+            print("H3")
         case .verticalTop:
-            rotate1 = 2
-            rotate2 = 1
-            moveByConst = -calculateSquareFrameDimension() / 3
-            print(moveByConst)
-            completetionCondition =  true
-            moveAnchor = .leading
-            print("hai")
+            if(lastItem == 6) {
+            cellStating = findCell(item: 0, section: 0)
+            } else {
+                cellStating = findCell(item: 6, section: 0)
+            }
+            print("V1")
         case .verticalMiddle:
-            rotate1 = 2
-            rotate2 = 1
-//            moveByConst = calculateSquareFrameDimension() / 6
-            completetionCondition =  false
-            print("hai")
+            if(lastItem == 7) {
+            cellStating = findCell(item: 1, section: 0)
+            } else {
+                cellStating = findCell(item: 7, section: 0)
+            }
+            print("V2")
         case .verticalBottom:
-            rotate1 = 2
-            rotate2 = 1
-            moveByConst =    calculateSquareFrameDimension() / 3
-            print(moveByConst)
-            completetionCondition =  true
-            moveAnchor = .leading
-            print("hai")
+            if(lastItem == 8) {
+            cellStating = findCell(item: 2, section: 0)
+            } else {
+                cellStating = findCell(item: 8, section: 0)
+            }
+            print("V3")
         case .diagnolForwardBend:
-            rotate1 = 2
-            rotate2 = 4
-            completetionCondition =  false
-            print("hai")
+            if(lastItem == 6) {
+            cellStating = findCell(item: 2, section: 0)
+            } else {
+                cellStating = findCell(item: 6, section: 0)
+            }
+            print("D1")
         case .diagnolBackwardBend:
-            rotate1 = 1
-            rotate2 = 4
-            completetionCondition =  false
-            print("hai")
+            if(lastItem == 8) {
+            cellStating = findCell(item: 0, section: 0)
+            } else {
+                cellStating = findCell(item: 8, section: 0)
+            }
+            print("D2")
         }
-        animateView.transform = CGAffineTransform.identity;
-        NSLayoutConstraint.deactivate(animateView.constraints)
-        animateViewLayout()
-        
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveLinear, animations: {
-            self.trailingAnchor?.constant = self.squareFrame.frame.width //left to right
-            self.topAnchor?.constant = self.squareFrame.frame.height / 2
-            self.animateView.transform = self.animateView.transform.rotated(by: CGFloat.pi / CGFloat(rotate1!))
-            self.animateView.transform = self.animateView.transform.rotated(by: CGFloat.pi / CGFloat(rotate2!))
-            self.loadViewIfNeeded()
-        }, completion: {_ in
-            nextAnimate(winnerTeam: winnerTeam)
-        })
-        
-        func nextAnimate(winnerTeam: String) {
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-                self.view.layoutIfNeeded()
-                if completetionCondition {
-                    if moveAnchor == .top {
-                        print("Happy to move")
-                        print(moveByConst!)
-                self.topAnchor?.constant = moveByConst!
-                    } else {
-                    self.leadingAnchor?.constant = moveByConst!
-                }
-                }
-               
-            }, completion: {_ in
-                sleep(1)
-                self.pushPopUp(title: "\(winnerTeam)")
-            })
+        guard let cellEnding = cellEnding else {
+            return
         }
+        guard let cellStating = cellStating else {
+            return
+        }
+        let statyingPoint: CGPoint = cellStating.center
+        let endindPoint: CGPoint = cellEnding.center
+        let path = UIBezierPath()
+        path.move(to:  statyingPoint)
+        path.addLine(to: endindPoint)
+        shapeLayer = CAShapeLayer()
+        shapeLayer?.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
+        shapeLayer?.strokeColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1).cgColor
+        shapeLayer?.lineWidth = lineThickness
+        shapeLayer?.path = path.cgPath
+        CATransaction.begin()
+        collectionView.layer.addSublayer(shapeLayer!)
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.fromValue = 0
+        animation.duration = 0.4
+        CATransaction.setCompletionBlock{ [weak self] in
+            self?.shapeLayer?.removeFromSuperlayer()
+            self?.pushPopUp(title: "\(winnerTeam)")
+                print("again...")
+            }
+        shapeLayer?.add(animation, forKey: "MyAnimation")
+        CATransaction.commit()
     }
 }
