@@ -14,7 +14,6 @@ class DatabaseHandler: DbHandlerProtocol {
     var path : String = "EducateDataBase.sqlite"
     init() {
         DatabaseHandler.db = createDB()
-        
     }
     
     func createDB() -> OpaquePointer? {
@@ -70,7 +69,6 @@ class DatabaseHandler: DbHandlerProtocol {
         for category in categories {
             print("krish loaded: \(InstanceProvider.categoryData.insertData(category: category))")
         }
-        
     }
     
     private func loadCourseDate() {

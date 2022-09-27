@@ -1,10 +1,8 @@
-//
 //  TableViewCell.swift
 //  Educate_UI
 //
 //  Created by amalan-pt5585 on 23/09/22.
 //
-
 import UIKit
 
 class  TableViewCell: UITableViewCell {
@@ -25,15 +23,12 @@ class  TableViewCell: UITableViewCell {
         return collectionView
     }()
     
-    
     lazy var tableViewSectionTitle: UILabel = {
         let textLabel = UILabel()
         let screenHeight = UIScreen.main.fixedCoordinateSpace.bounds.height
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.textColor = .label
-        textLabel.font = .boldSystemFont(ofSize: screenHeight / 40)
-        textLabel.font = textLabel.font.bold()
-//        textLabel.font = .preferredFont(forTextStyle: .largeTitle)
+        textLabel.font = UIFont(name: "Kailasa-Bold", size: screenHeight / 40)
         textLabel.text = "Welcome"
         return textLabel
     }()
@@ -41,19 +36,14 @@ class  TableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.backgroundColor = .systemBackground
-        layout()
+        viewConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-//        collectionView.frame = contentView.bounds
-    }
-    
-    func layout() {
+    func viewConstraints() {
         contentView.addSubview(collectionView)
         contentView.addSubview(tableViewSectionTitle)
         let constraints = [
@@ -67,12 +57,9 @@ class  TableViewCell: UITableViewCell {
         ]
         NSLayoutConstraint.activate(constraints)
     }
-   
-     
+    
 }
 
-
- 
 extension TableViewCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         1
@@ -86,18 +73,24 @@ extension TableViewCell: UICollectionViewDelegate, UICollectionViewDataSource, U
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
         cell.backgroundColor = .clear
         let courseData = courseDataLoader().readCourseData(categoryId: 2)
-        if  courseData.count > indexPath.item {
-        cell.loadData(courseDetails: courseData[indexPath.item])
+        if  courseData.count >= indexPath.item {
+            //            if indexPath.item == 6 {
+            //                cell.lastCell()
+            //                print("Last cell")
+            //                return cell
+            //            }
+            cell.loadData(courseDetails: courseData[indexPath.item])
         }
+        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-           return UIEdgeInsets(top: 0, left: 14, bottom: 0, right: 14)
-       }
+        return UIEdgeInsets(top: 0, left: 14, bottom: 0, right: 14)
+    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        return CGSize(width: (6 * (screenWidth / 15) )  , height: (6 * (screenWidth / 15)))
+        //        return CGSize(width: (6 * (screenWidth / 15) )  , height: (6 * (screenWidth / 15)))
         return CGSize(width: 0.75 * (collectionView.frame.height)  , height: (collectionView.frame.height))
     }
 }

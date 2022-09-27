@@ -9,15 +9,25 @@ import UIKit
 
 class HomeViewController: UIViewController {
     var imageViewHeight:NSLayoutConstraint?
+    var tableViewHeight:NSLayoutConstraint?
     
-    lazy var  customizedHeaderView: UIView = {
+    lazy var  customizedAdView: UIView = {
         let customizedView = UIView()
         customizedView.translatesAutoresizingMaskIntoConstraints = false
         customizedView.backgroundColor =  .systemBackground
         return customizedView
     }()
     
-    lazy var imageView: UIImageView = {
+    lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.backgroundColor = .clear
+        scrollView.showsHorizontalScrollIndicator =  false
+        scrollView.showsVerticalScrollIndicator = false
+        return scrollView
+    }()
+    
+    lazy var imageViewForAd: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.load(urlString: "https://aventislearning.com/wp-content/themes/thrive-theme-child/images/sf/0EM8400000079ml.jpg")
@@ -26,27 +36,29 @@ class HomeViewController: UIViewController {
         return imageView
     }()
     
-    lazy var headerViewTitle: UILabel = {
+    lazy var adViewTitle: UILabel = {
         let textLabel = UILabel()
         let screenHeight = UIScreen.main.fixedCoordinateSpace.bounds.height
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.textColor = .label
         textLabel.font = UIFont(name: "Georgia", size: view.frame.width / 20)
         textLabel.font = textLabel.font.bold()
-//        textLabel.font = .preferredFont(forTextStyle: .largeTitle)
+        //        textLabel.font = .preferredFont(forTextStyle: .largeTitle)
         textLabel.text = "Find the right fit"
         textLabel.numberOfLines = 2
         return textLabel
     }()
     
-    lazy var headerViewDefenition: UILabel = {
+    lazy var adViewDefenition: UILabel = {
         let textLabel = UILabel()
         let screenHeight = UIScreen.main.fixedCoordinateSpace.bounds.height
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.textColor = .label
-//        textLabel.font = .preferredFont(forTextStyle: .largeTitle)
-        textLabel.text = "Choose from 204,000 online video courses with new additions published every month"
-        textLabel.numberOfLines = 2
+        //        textLabel.font = .preferredFont(forTextStyle: .largeTitle)
+        textLabel.text = """
+Choose from 204,000 online video courses with new additions published every month
+"""
+        textLabel.numberOfLines = 4
         return textLabel
     }()
     
@@ -58,6 +70,7 @@ class HomeViewController: UIViewController {
         tableView.backgroundColor = .systemBackground
         tableView.showsHorizontalScrollIndicator = false
         tableView.showsVerticalScrollIndicator = false
+        tableView.isScrollEnabled = false
         tableView.delegate = self
         tableView.dataSource = self
         return tableView
@@ -68,17 +81,21 @@ class HomeViewController: UIViewController {
         title = "Home"
         view.backgroundColor = .systemBackground
         setNavigationBarColour()
-        tabelViewConstraints()
+        viewConstraints()
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         imageViewHeight?.constant = view.frame.width / 2
-        headerViewTitle.font = UIFont(name: "Georgia", size: view.frame.width / 15)
-        headerViewTitle.font = headerViewTitle.font.bold()
-        headerViewDefenition.font =  UIFont(name: "Thonburi-Light", size: view.frame.width / 30)
+        adViewTitle.font = UIFont(name: "Georgia", size: view.frame.width / 15)
+        adViewTitle.font = adViewTitle.font.bold()
+        adViewDefenition.font =  UIFont(name: "Thonburi-Light", size: view.frame.width / 30)
+        tableView.reloadData()
+        tableView.layoutIfNeeded()
+        tableViewHeight!.constant = tableView.contentSize.height
+        print(tableView.contentSize.height)
     }
-
+    
     func setNavigationBarColour() {
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = UIColor.systemBackground
@@ -87,46 +104,55 @@ class HomeViewController: UIViewController {
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
-    func tabelViewConstraints() {
-        view.addSubview(tableView)
-        view.addSubview(customizedHeaderView)
+    func viewConstraints() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(customizedAdView)
+        scrollView.addSubview(tableView)
         
-        customizedHeaderView.addSubview(imageView)
-        customizedHeaderView.addSubview(headerViewTitle)
-        customizedHeaderView.addSubview(headerViewDefenition)
+        customizedAdView.addSubview(imageViewForAd)
+        customizedAdView.addSubview(adViewTitle)
+        customizedAdView.addSubview(adViewDefenition)
         
-        imageViewHeight = imageView.heightAnchor.constraint(equalToConstant: view.frame.width / 2)
+        imageViewHeight = imageViewForAd.heightAnchor.constraint(equalToConstant: view.frame.width / 2)
+        tableViewHeight = tableView.heightAnchor.constraint(equalToConstant: .greatestFiniteMagnitude)
         guard let imageViewHeight = imageViewHeight else {
             return
         }
-
+        
         let constraints = [
-            customizedHeaderView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            customizedHeaderView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            customizedHeaderView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            imageView.topAnchor.constraint(equalTo: customizedHeaderView.topAnchor),
-            imageView.leadingAnchor.constraint(equalTo: customizedHeaderView.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: customizedHeaderView.trailingAnchor),
+            customizedAdView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            customizedAdView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            customizedAdView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            
+            imageViewForAd.topAnchor.constraint(equalTo: customizedAdView.topAnchor),
+            imageViewForAd.leadingAnchor.constraint(equalTo: customizedAdView.leadingAnchor),
+            imageViewForAd.trailingAnchor.constraint(equalTo: customizedAdView.trailingAnchor),
             imageViewHeight,
             
-            headerViewTitle.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10),
-            headerViewTitle.leadingAnchor.constraint(equalTo: customizedHeaderView.leadingAnchor, constant: 10),
-            headerViewTitle.trailingAnchor.constraint(equalTo: customizedHeaderView.trailingAnchor, constant: -10),
+            adViewTitle.topAnchor.constraint(equalTo: imageViewForAd.bottomAnchor, constant: 10),
+            adViewTitle.leadingAnchor.constraint(equalTo: customizedAdView.leadingAnchor, constant: 10),
+            adViewTitle.trailingAnchor.constraint(equalTo: customizedAdView.trailingAnchor, constant: -10),
             
-            headerViewDefenition.topAnchor.constraint(equalTo: headerViewTitle.bottomAnchor, constant: 5),
-            headerViewDefenition.leadingAnchor.constraint(equalTo: customizedHeaderView.leadingAnchor, constant: 10),
-            headerViewDefenition.trailingAnchor.constraint(equalTo: customizedHeaderView.trailingAnchor, constant: -10),
-            headerViewDefenition.bottomAnchor.constraint(equalTo: customizedHeaderView.bottomAnchor),
+            adViewDefenition.topAnchor.constraint(equalTo: adViewTitle.bottomAnchor, constant: 5),
+            adViewDefenition.leadingAnchor.constraint(equalTo: customizedAdView.leadingAnchor, constant: 10),
+            adViewDefenition.trailingAnchor.constraint(equalTo: customizedAdView.trailingAnchor, constant: -10),
+            adViewDefenition.bottomAnchor.constraint(equalTo: customizedAdView.bottomAnchor),
+            //            customizedHeaderView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
-            tableView.topAnchor.constraint(equalTo: customizedHeaderView.bottomAnchor, constant: 10),
+            tableView.topAnchor.constraint(equalTo: customizedAdView.bottomAnchor, constant: 10),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            tableViewHeight!,
+            tableView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            
         ]
         NSLayoutConstraint.activate(constraints)
     }
-    
     
 }
 
@@ -148,7 +174,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let screenHeight = UIScreen.main.fixedCoordinateSpace.bounds.height
-        return (5 * (screenHeight / 15) )
+        return  (screenHeight / 3)
     }
     
     

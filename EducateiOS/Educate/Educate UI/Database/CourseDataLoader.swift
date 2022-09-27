@@ -38,7 +38,7 @@ courseData.categoryId = \(categoryId)
                 let ratingDetails = calculateRating(courseId: Int(courseId))
                 let courseData = CourseDataModel(courseDetails: course, instructorName: instructorName, rating: ratingDetails.avgRating, noOfRaters: ratingDetails.noOfRaters)
                 overAllCourseDetails.append(courseData)
-
+                
             }
         } else {
             print("Statement Not prepared!")
@@ -46,7 +46,7 @@ courseData.categoryId = \(categoryId)
         sqlite3_finalize(statement)
         return overAllCourseDetails
     }
-
+    
 }
 
 

@@ -51,6 +51,4 @@ class CategoryData: CategoryDataProtocol {
         return status
     }
     
-    
-    
 }

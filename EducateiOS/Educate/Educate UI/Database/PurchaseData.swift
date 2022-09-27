@@ -9,13 +9,13 @@ import Foundation
 import SQLite3
 
 class PurchaseData: PurchaseDataProtocol {
-
+    
     let sqlite_transient = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-
+    
     func createPurchaseTable() {
         let query = "CREATE TABLE IF NOT EXISTS purchaseData (courseId INTEGER, instructorId TEXT, studentId TEXT, rating INTEGER, favouriteFlag INTEGER, price INTEGER, FOREIGN KEY (courseId) REFERENCES courseData (courseId), FOREIGN KEY (instructorId) REFERENCES instructorData (userId), FOREIGN KEY (studentId) REFERENCES studentData (userId));"  //avg INTEGER
         var statement : OpaquePointer? = nil
-
+        
         if sqlite3_prepare_v2(DatabaseHandler.db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
                 print("Table creation success")
@@ -26,7 +26,7 @@ class PurchaseData: PurchaseDataProtocol {
             print("Prepration fail")
         }
     }
-
+    
     func insertData(purchase: PurchaseTemplate) -> Bool {
         var status: Bool
         print("I am at insertion work")
@@ -49,5 +49,5 @@ class PurchaseData: PurchaseDataProtocol {
         sqlite3_finalize(statement)
         return status
     }
-
+    
 }

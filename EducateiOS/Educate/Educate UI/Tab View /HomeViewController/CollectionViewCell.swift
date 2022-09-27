@@ -9,11 +9,13 @@
 import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
+    
     static let identifier = "CollectionViewCell"
     var rating: Float = 0
     var coursePrice: Float = 0
     static var RecomandedData: [CourseDataModel] = []
-    lazy var imageView: UIImageView = {
+    
+    lazy var courseCoverImage: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
@@ -38,15 +40,13 @@ class CollectionViewCell: UICollectionViewCell {
         let screenHeight = UIScreen.main.fixedCoordinateSpace.bounds.height
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.textColor = .secondaryLabel
-//        textLabel.font = .boldSystemFont(ofSize: screenHeight / 75)
-//        textLabel.font = .preferredFont(forTextStyle: .footnote)
         textLabel.font = .systemFont(ofSize: screenHeight / 70)
         textLabel.text = "Allen Anish"
         textLabel.numberOfLines = 1
         return textLabel
     }()
     
-    lazy var courseRatingFloat: UILabel = {
+    lazy var courseRatingLabelInFloat: UILabel = {
         let textLabel = UILabel()
         let screenHeight = UIScreen.main.fixedCoordinateSpace.bounds.height
         textLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -62,7 +62,6 @@ class CollectionViewCell: UICollectionViewCell {
         let screenHeight = UIScreen.main.fixedCoordinateSpace.bounds.height
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.textColor = .tertiaryLabel
-//        textLabel.font = .boldSystemFont(ofSize: screenHeight / 50)
         textLabel.font = .systemFont(ofSize: screenHeight / 60)
         textLabel.text = "(\(20))"
         textLabel.numberOfLines = 1
@@ -75,26 +74,23 @@ class CollectionViewCell: UICollectionViewCell {
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.textColor = .label
         textLabel.font = .boldSystemFont(ofSize: screenHeight / 40)
-        textLabel.font = textLabel.font.bold()
         textLabel.text = "₹999"
         textLabel.numberOfLines = 1
         return textLabel
     }()
     
-    
-    lazy var starRatingLabel: UILabel = {
+    lazy var courseRatingLabelInStars: UILabel = {
         let textLabel = UILabel()
         let screenHeight = UIScreen.main.fixedCoordinateSpace.bounds.height
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.textColor = .label
         textLabel.font = .systemFont(ofSize: 0.1)
-//        textLabel.font = .boldSystemFont(ofSize: 10)
+        //        textLabel.font = .boldSystemFont(ofSize: 10)
         textLabel.font = textLabel.font.bold()
         textLabel.text = "**"
         textLabel.numberOfLines = 1
         return textLabel
     }()
-
     
     lazy var courseLabelStack: UIStackView = {
         let stackView = UIStackView()
@@ -114,9 +110,19 @@ class CollectionViewCell: UICollectionViewCell {
         return stackView
     }()
     
+    lazy var seeMoreButton: UIButton = {
+        let button = UIButton()
+        let screenHeight = UIScreen.main.fixedCoordinateSpace.bounds.height
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("See More", for: .normal)
+        button.setTitleColor(.systemOrange, for: .normal)
+        button.backgroundColor = .clear
+        button.titleLabel?.font = .systemFont(ofSize: screenHeight / 60)
+        return button
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        layout()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -128,21 +134,30 @@ class CollectionViewCell: UICollectionViewCell {
         CollectionViewCell.RecomandedData.append(courseDetails)
         courseTitle.text = courseDetails.courseDetails.courseName
         instructotName.text = courseDetails.instructorName
-        courseRatingFloat.text = "\(courseDetails.rating)"
-        imageView.load(urlString: "\(courseDetails.courseDetails.courseCover)")
+        courseRatingLabelInFloat.text = "\(courseDetails.rating)"
+        courseCoverImage.load(urlString: "\(courseDetails.courseDetails.courseCover)")
         rating = courseDetails.rating
-//        StarStackView = StarViewController().statRating(ratingValue: courseDetails.rating)
-        starRatingLabel.attributedText = StarViewController.statRating(ratingValue: courseDetails.rating)
+        //        StarStackView = StarViewController().statRating(ratingValue: courseDetails.rating)
+        courseRatingLabelInStars.attributedText = FiveStarHelper.statRating(ratingValue: courseDetails.rating)
         numberOfRaters.text =  "(\(courseDetails.noOfRaters))"
         price.text = "₹\(coursePrice)"
         print("Function \(rating)")
-        layout()
+        viewConstraints()
         rating = 0
     }
     
+    func lastCell() {
+        contentView.addSubview(seeMoreButton)
+        let  constraints = [
+            seeMoreButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            seeMoreButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+        ]
+        NSLayoutConstraint.activate(constraints)
+    }
     
-    func layout() {
-        contentView.addSubview(imageView)
+    
+    func viewConstraints() {
+        contentView.addSubview(courseCoverImage)
         contentView.addSubview(courseLabelStack)
         
         courseLabelStack.addArrangedSubview(courseTitle)
@@ -150,20 +165,19 @@ class CollectionViewCell: UICollectionViewCell {
         courseLabelStack.addArrangedSubview(ratingLabelStack)
         courseLabelStack.addArrangedSubview(price)
         
-        ratingLabelStack.addArrangedSubview(courseRatingFloat)
-        ratingLabelStack.addArrangedSubview(starRatingLabel)
+        ratingLabelStack.addArrangedSubview(courseRatingLabelInFloat)
+        ratingLabelStack.addArrangedSubview(courseRatingLabelInStars)
         ratingLabelStack.addArrangedSubview(numberOfRaters)
         
         let constraints = [
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageView.bottomAnchor.constraint(equalTo: contentView.centerYAnchor),
-            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            courseCoverImage.topAnchor.constraint(equalTo: contentView.topAnchor),
+            courseCoverImage.bottomAnchor.constraint(equalTo: contentView.centerYAnchor),
+            courseCoverImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            courseCoverImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
-            courseLabelStack.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 2),
-            courseLabelStack.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
-            courseLabelStack.trailingAnchor.constraint(equalTo: imageView.trailingAnchor)
-            
+            courseLabelStack.topAnchor.constraint(equalTo: courseCoverImage.bottomAnchor, constant: 2),
+            courseLabelStack.leadingAnchor.constraint(equalTo: courseCoverImage.leadingAnchor),
+            courseLabelStack.trailingAnchor.constraint(equalTo: courseCoverImage.trailingAnchor),
         ]
         NSLayoutConstraint.activate(constraints)
     }

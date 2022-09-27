@@ -10,7 +10,6 @@ import SQLite3
 
 class StudentData: StudentDataProtocol {
     
-    
     let sqlite_transient = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
     
     func createUserTable() {
