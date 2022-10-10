@@ -16,7 +16,7 @@ class CategoryData: CategoryDataProtocol {
         let query = "CREATE TABLE IF NOT EXISTS categoryData (categoryId INTEGER PRIMARY KEY AUTOINCREMENT,categoryName TEXT);"  //avg INTEGER
         var statement : OpaquePointer? = nil
         
-        if sqlite3_prepare_v2(DatabaseHandler.db, query, -1, &statement, nil) == SQLITE_OK {
+        if sqlite3_prepare_v2(DatabaseHandler.dataBaseHandlerInstance.db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
                 print("Table creation success")
             }else {
@@ -27,13 +27,13 @@ class CategoryData: CategoryDataProtocol {
         }
     }
     
-    func insertData(category: String) -> Bool {
+    func insertDataOf(category: String) -> Bool {
         var status: Bool
         print("I am at insertion work")
         let query = "INSERT INTO categoryData (categoryName) VALUES ('\(category)')"
         var statement: OpaquePointer?
         
-        if sqlite3_prepare(DatabaseHandler.db, query, -1, &statement, nil) == SQLITE_OK {
+        if sqlite3_prepare(DatabaseHandler.dataBaseHandlerInstance.db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
                 print("category inserted")
                 status = true

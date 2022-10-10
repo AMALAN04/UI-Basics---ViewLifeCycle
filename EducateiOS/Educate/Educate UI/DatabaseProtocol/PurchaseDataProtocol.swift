@@ -8,6 +8,7 @@
 import Foundation
 
 protocol PurchaseDataProtocol {
-    func createPurchaseTable()
-    func insertData(purchase: PurchaseTemplate) -> Bool
+    func createPurchaseDataTable()
+    func insertDataOf(purchase: PurchaseTemplate) -> Bool
+    func reviewDetails(courseId: Int, userId: String ) -> (myReview: ReviewDataModel?, othersReview: [ReviewDataModel])
 }

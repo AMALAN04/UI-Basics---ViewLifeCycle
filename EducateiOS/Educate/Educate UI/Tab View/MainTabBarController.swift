@@ -13,6 +13,14 @@ class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tabBar.backgroundColor = .systemBackground
+        tabBar.isOpaque = true
+        tabBar.layer.opacity = 1
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .systemBackground
+        appearance.shadowColor = .clear
+        tabBar.standardAppearance = appearance
+        tabBar.scrollEdgeAppearance = tabBar.standardAppearance
         
         let homeVc = UINavigationController(rootViewController: HomeViewController())
         let categoryVc = UINavigationController(rootViewController: SearchViewController())
@@ -24,31 +32,31 @@ class MainTabBarController: UITabBarController {
         homeVc.title = "Home"
         categoryVc.title = "Search"
         myLearningVc.title = "My learning"
-        wishlistVc.title = "Wishlist"
+        wishlistVc.title = "Favourites"
         profileVc.title = "Profile"
         
         setViewControllers([homeVc, categoryVc, myLearningVc, wishlistVc, profileVc], animated: false)
-                guard let items = self.tabBar.items else {return}
-                let images = ["house.fill", "magnifyingglass", "play.fill", "heart.fill", "person.fill"]
-                var index = 0
-                for item in items {
-                    item.image = UIImage(systemName: images[index])
-                    index += 1
-                }
+        guard let items = self.tabBar.items else {return}
+        let images = ["house.fill", "magnifyingglass", "play.fill", "heart.fill", "person.fill"]
+        var index = 0
+        for item in items {
+            item.image = UIImage(systemName: images[index])
+            index += 1
+        }
         self.selectedIndex = 0
-
-//        tabBarController?.addSubviewToLastTabItem(UIImage(named: "educateLogo.png")!)
+        
+        //        tabBarController?.addSubviewToLastTabItem(UIImage(named: "educateLogo.png")!)
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(true)
-            self.navigationController?.setNavigationBarHidden(true, animated: true)
-        }
-        override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(true)
-            self.navigationController?.setNavigationBarHidden(false, animated: true)
-        }
+        super.viewWillAppear(true)
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+    }
     
- 
+    
 }

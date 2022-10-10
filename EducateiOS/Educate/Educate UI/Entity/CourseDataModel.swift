@@ -12,4 +12,6 @@ struct CourseDataModel {
     var instructorName: String
     var rating: Float
     var noOfRaters: Int
+    var noOfStudents: Int
+    var purchasedStatus: Bool
 }

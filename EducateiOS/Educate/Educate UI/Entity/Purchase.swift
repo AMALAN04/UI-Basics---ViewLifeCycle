@@ -12,6 +12,8 @@ struct PurchaseTemplate {
     var instructorId: String
     var studentId: String
     var rating: Int = 0
+    var comment: String = ""
     var favouriteFlag: Int = 0
     var price: Int
+    var date: String
 }

@@ -28,8 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window?.windowScene = windowScene
             window?.makeKeyAndVisible()
              let rootViewController = LoginViewController()
-            rootViewController.loginVerifierDelegate = LoginVerifier()
-        let databaseHandler: DbHandlerProtocol = DatabaseHandler()
+            let databaseHandler: DbHandlerProtocol = DatabaseHandler.dataBaseHandlerInstance
         
             let defaults = UserDefaults.standard
             if defaults.bool(forKey: "FirstLaunch") && defaults.bool(forKey: "AlreadyLoggedIn") {

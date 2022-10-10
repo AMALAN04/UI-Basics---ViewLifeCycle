@@ -8,7 +8,7 @@
 import Foundation
 
 protocol StudentDataProtocol {
-    func createUserTable()
-    func insertData(student: Student) -> Bool
+    func createStudentTable()
+    func insertDataOf(student: Student) -> Bool
     func readDataOf(studentId: String) -> Student?
 }

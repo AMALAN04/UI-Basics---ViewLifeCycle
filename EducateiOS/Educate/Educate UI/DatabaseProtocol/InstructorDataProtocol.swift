@@ -8,6 +8,7 @@
 import Foundation
 
 protocol InstructorDataProtocol {
-    func createUserTable()
-    func insertData(instructor: Instructor) -> Bool
+    func createInstructorTable()
+    func insertDataOf(instructor: Instructor) -> Bool
+    func readDataOf(instructorId: String) -> InstructorDataModel?
 }

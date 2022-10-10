@@ -9,5 +9,5 @@ import Foundation
 
 protocol CategoryDataProtocol {
     func createCategoryTable()
-    func insertData(category: String) -> Bool
+    func insertDataOf(category: String) -> Bool
 }

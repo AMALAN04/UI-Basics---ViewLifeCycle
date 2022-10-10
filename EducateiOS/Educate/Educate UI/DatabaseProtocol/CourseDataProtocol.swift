@@ -9,5 +9,5 @@ import Foundation
 
 protocol CourseDataProtocol {
     func createCourseTable()
-    func insertData(course: Course) -> Bool
+    func insertDataOf(course: Course) -> Bool
 }
