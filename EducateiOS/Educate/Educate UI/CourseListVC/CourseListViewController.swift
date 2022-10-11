@@ -9,33 +9,25 @@ import UIKit
 
 class CourseListViewController: UIViewController {
     var courseData: [CourseDataModel] = []
+    var category: Category?
     var courseDataSearchResult: [CourseDataModel] = []
     var filterData: [CourseDataModel] = []
     let courseListVCHelper: CourseListVCHelperProtocol = CourseListVCHelper()
     var optionChoosed = Filters._default
     var titleText: String?
+    var lastSearch: String?
     
     lazy var filterButton: UIBarButtonItem = {
         let barButton = UIBarButtonItem(title: "Filter", image: nil, menu: addMenu())
         return barButton
     }()
+    
     lazy var priceLowToHigh = UIAction(title: "Price: Low to High", handler: { [weak self] _  in
         let optionChoosed = Filters.priceLowToHigh
         self?.optionChoosed = .priceLowToHigh
         self?.changeMenuImage(optionChoosed: optionChoosed)
         self?.reloadTableView()
     })
-    
-    lazy var bagdge: UILabel = {
-        let lblBadge = UILabel.init(frame: CGRect.init(x: 20, y: 0, width: 15, height: 15))
-        lblBadge.backgroundColor = .red
-        lblBadge.clipsToBounds = true
-        lblBadge.layer.cornerRadius = 7
-        lblBadge.textColor = UIColor.white
-        lblBadge.font = .systemFont(ofSize: 10)
-        lblBadge.textAlignment = .center
-        return lblBadge
-    }()
     
     lazy var priceHightoLow = UIAction(title: "Price: High to Low", handler:  { [weak self] _ in
         let optionChoosed = Filters.priceHighToLow
@@ -65,6 +57,17 @@ class CourseListViewController: UIViewController {
         self?.reloadTableView()
     })
     
+    lazy var bagdge: UILabel = {
+        let lblBadge = UILabel.init(frame: CGRect.init(x: 20, y: 0, width: 15, height: 15))
+        lblBadge.backgroundColor = .red
+        lblBadge.clipsToBounds = true
+        lblBadge.layer.cornerRadius = 7
+        lblBadge.textColor = UIColor.white
+        lblBadge.font = .systemFont(ofSize: 10)
+        lblBadge.textAlignment = .center
+        return lblBadge
+    }()
+    
     lazy var searchController: UISearchController = {
         let searchController = UISearchController()
         searchController.searchBar.sizeToFit()
@@ -80,7 +83,7 @@ class CourseListViewController: UIViewController {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register( ListTableViewCell.self, forCellReuseIdentifier: ListTableViewCell.identifier)
-        tableView.separatorStyle = .singleLine
+        tableView.separatorStyle = .none
         tableView.delegate = self
         tableView.dataSource = self
         return tableView
@@ -89,10 +92,10 @@ class CourseListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        view.addSubview(tableView)
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchData), name: NSNotification.Name("UPDATE_REVIEW"), object: nil)
         configureNavigationBar()
         viewConstraints()
-//        setupKeyboardHiding()
+        //        setupKeyboardHiding()
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -100,27 +103,28 @@ class CourseListViewController: UIViewController {
         tableView.reloadData()
     }
     
-//    private func setupKeyboardHiding() {
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-//    }
-    
-//    @objc func keyboardWillShow(sender: NSNotification) {
-//        if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-//            print(-keyboardSize.height)
-//            self.view.frame.origin.y = -keyboardSize.height * 2
-//        }
-//    }
-//
-//    @objc func keyboardWillHide() {
-//        self.view.frame.origin.y = 0
-//    }
+    @objc func fetchData() {
+        print("new category list is ready to loading")
+        if let category = category {
+            courseData = courseListVCHelper.readCourseDatasOf(category: category)
+            print("new category list is loading")
+            if let lastSearch = lastSearch {
+                print("last search \(lastSearch)")
+                print(category)
+                print(optionChoosed)
+                shearchResult(searchText: lastSearch)
+            } else {
+                filterData = courseListVCHelper.applyFilter(filter: optionChoosed, in: courseData)
+                tableView.reloadData()
+            }
+        }
+    }
     
     func configureNavigationBar() {
         navigationItem.searchController = searchController
         makeMenuImagesToDefault()
         _default.image = UIImage(systemName: "circle.circle.fill")
-        filterButton = UIBarButtonItem(title: "Filter", image: nil, menu: addMenu())
+        filterButton = UIBarButtonItem(title: "", image: UIImage(systemName: "line.3.horizontal.decrease.circle"), menu: addMenu())
         navigationItem.rightBarButtonItem = filterButton
     }
     
@@ -162,12 +166,12 @@ class CourseListViewController: UIViewController {
     }
     
     func changeMenuImage(optionChoosed: Filters) {
-        if optionChoosed != ._default {
-            filterButton.tintColor = .systemRed
-//            filterButton.customView?.addSubview(bagdge)
-        } else {
-            filterButton.tintColor = .systemBlue
-        }
+//        if optionChoosed != ._default {
+//            filterButton.tintColor = .systemRed
+//            //            filterButton.customView?.addSubview(bagdge)
+//        } else {
+//            filterButton.tintColor = .systemBlue
+//        }
         makeMenuImagesToDefault()
         
         switch optionChoosed {
@@ -190,14 +194,13 @@ class CourseListViewController: UIViewController {
         filterData = courseListVCHelper.applyFilter(filter: optionChoosed, in: courseDataSearchResult)
         self.tableView.reloadData()
         if tableView.numberOfRows(inSection: 0) != 0 {
-                tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
         }
     }
     
     func addMenu() -> UIMenu {
         print("Add menu loading")
-        let menuItems = UIMenu(title: "Sort by", options: .displayInline, children: [ priceLowToHigh, priceHightoLow, rating, popuraity, _default
-        ])
+        let menuItems = UIMenu(title: "Sort by", options: .displayInline, children: [ priceLowToHigh, priceHightoLow, rating, popuraity, _default ])
         return menuItems
     }
     
@@ -238,20 +241,19 @@ extension CourseListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let rootVC = CourseDisplayViewController()
-        rootVC.courseData = (filterData[indexPath.item])
-       navigationController?.pushViewController(rootVC, animated: true)
+        rootVC.courseId = (filterData[indexPath.item]).courseDetails.courseId
+        rootVC.instructorId = (filterData[indexPath.item]).courseDetails.instructorId
+        navigationController?.pushViewController(rootVC, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
-        {
-            return UITableView.automaticDimension
-        }
+    {
+        return UITableView.automaticDimension
+    }
     
-}
-
-extension CourseListViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    func shearchResult(searchText: String) {
         courseDataSearchResult = []
+        lastSearch = searchText
         if searchText == "" {
             courseDataSearchResult =  courseData
             filterData = courseDataSearchResult
@@ -263,9 +265,16 @@ extension CourseListViewController: UISearchBarDelegate {
             }
             filterData = courseListVCHelper.applyFilter(filter: optionChoosed, in: courseDataSearchResult)
             self.tableView.reloadData()
+        }
+    }
+    
+}
+
+extension CourseListViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+            shearchResult(searchText: searchText)
             if tableView.numberOfRows(inSection: 0) != 0 {
-                    tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+                tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
             }
         }
     }
-}

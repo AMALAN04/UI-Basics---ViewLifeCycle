@@ -74,6 +74,9 @@ class PurchaseData: PurchaseDataProtocol {
                 let date = String(cString: sqlite3_column_text(statement, 5))
                 
                 if studentId == userId {
+                    if rating == 0 {
+                        continue
+                    }
                     let review = ReviewDataModel(userProfile: profilePhoto, userName: name, userId: studentId, userRating: Int(rating), date: date, comment: comment)
                     myReview = review
                 } else {
@@ -90,6 +93,35 @@ class PurchaseData: PurchaseDataProtocol {
         }
         sqlite3_finalize(statement)
         return (myReview, othersReview)
+    }
+    
+    func updateReviewOf(courseId: Int, studentId: String, as review: String, and rating: Int) -> Bool {
+        let query = "UPDATE  purchaseData SET comment = '\(review)', Rating = \(rating), date = '\(Date().shortDateTime)' WHERE courseId = \(courseId) AND studentId = '\(studentId)';"
+        print(query)
+        var status: Bool = false
+        var statement : OpaquePointer?
+        if sqlite3_prepare_v2(DatabaseHandler.dataBaseHandlerInstance.db, query, -1, &statement, nil) == SQLITE_OK {
+            
+            let value = sqlite3_step(statement)
+            
+            print(value)
+            print(SQLITE_DONE)
+            
+            if value == SQLITE_DONE {
+                print("event updated successfully!")
+                status = true
+            }
+            else {
+                print("event not updated!")
+                status = false
+            }
+        }
+        else {
+            print("event not prepared!")
+            status = false
+        }
+        sqlite3_finalize(statement)
+        return status
     }
     
 

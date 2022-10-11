@@ -18,12 +18,24 @@ class HomeCollectionViewCell: UICollectionViewCell {
     var coursePrice: Float = 0
     var courseData: CourseDataModel?
     
+    lazy var displayView: UIView = {
+        let displayView = UILabel()
+        displayView.translatesAutoresizingMaskIntoConstraints = false
+        displayView.backgroundColor = .clear
+        displayView.clipsToBounds = true
+        displayView.layer.cornerRadius = 10
+        return displayView
+    }()
+    
     lazy var courseCoverImage: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 0.04 * contentView.frame.height
+        imageView.layer.cornerRadius = 10
+        imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        //        imageView.layer.cornerRadius = 0.04 * contentView.frame.height
+        //        imageView.roundCorners([.topLeft, .bottomRight], radius: 10)
         return imageView
     }()
     
@@ -113,39 +125,14 @@ class HomeCollectionViewCell: UICollectionViewCell {
         return stackView
     }()
     
-    lazy var seeMoreButton: UIButton = {
-        let button = UIButton()
-        let screenHeight = UIScreen.main.fixedCoordinateSpace.bounds.height
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("See all", for: .normal)
-        button.setTitleColor( .systemPurple, for: .normal)
-        button.backgroundColor = .clear
-        button.titleLabel?.font =  UIFont(name:"GeezaPro-Bold", size: 20)
-        button.addTarget(self, action: #selector(seeAllButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        dropShadowIfNeeded()
         viewConstraints()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    func lastCell() {
-        contentView.addSubview(seeMoreButton)
-        prepareForReuse()
-        let  constraints = [
-            seeMoreButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            seeMoreButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-        ]
-        NSLayoutConstraint.activate(constraints)
-    }
-    
-    @objc func seeAllButtonTapped() {
-        print("ooo")
     }
     
     override func prepareForReuse() {
@@ -159,10 +146,24 @@ class HomeCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        guard previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle else {
+            return
+        }
+        dropShadowIfNeeded()
+    }
+    
+    func dropShadowIfNeeded() {
+        displayView.addShadow(offset: CGSize.init(width: 0, height: 3), color: UIColor.label, radius: 2.0, opacity: 0.35)
+    }
     
     func viewConstraints() {
-        contentView.addSubview(courseCoverImage)
-        contentView.addSubview(courseLabelStack)
+        contentView.addSubview(displayView)
+        
+        displayView.addSubview(courseCoverImage)
+        displayView.addSubview(courseLabelStack)
         
         courseLabelStack.addArrangedSubview(courseTitle)
         courseLabelStack.addArrangedSubview(instructorName)
@@ -174,14 +175,19 @@ class HomeCollectionViewCell: UICollectionViewCell {
         ratingLabelStack.addArrangedSubview(numberOfRaters)
         
         let constraints = [
-            courseCoverImage.topAnchor.constraint(equalTo: contentView.topAnchor),
-            courseCoverImage.bottomAnchor.constraint(equalTo: contentView.centerYAnchor),
-            courseCoverImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            courseCoverImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            displayView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 2),
+            displayView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2),
+            displayView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -2),
+            displayView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -2),
+            
+            courseCoverImage.topAnchor.constraint(equalTo: displayView.topAnchor),
+            courseCoverImage.bottomAnchor.constraint(equalTo: displayView.centerYAnchor, constant: -2),
+            courseCoverImage.leadingAnchor.constraint(equalTo: displayView.leadingAnchor),
+            courseCoverImage.trailingAnchor.constraint(equalTo: displayView.trailingAnchor),
             
             courseLabelStack.topAnchor.constraint(equalTo: courseCoverImage.bottomAnchor, constant: 2),
-            courseLabelStack.leadingAnchor.constraint(equalTo: courseCoverImage.leadingAnchor),
-            courseLabelStack.trailingAnchor.constraint(equalTo: courseCoverImage.trailingAnchor),
+            courseLabelStack.leadingAnchor.constraint(equalTo: courseCoverImage.leadingAnchor, constant: 5),
+            courseLabelStack.trailingAnchor.constraint(equalTo: courseCoverImage.trailingAnchor, constant: -5),
         ]
         NSLayoutConstraint.activate(constraints)
     }

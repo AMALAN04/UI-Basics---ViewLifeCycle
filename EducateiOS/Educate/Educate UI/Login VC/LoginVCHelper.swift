@@ -11,7 +11,6 @@ import UIKit
 class LoginVCHelper: LoginVCHelperProtocol {
     
     var loginVCDelegate: LoginViewControllerDelegate?
-    static var userId = ""
     
     func userInputValidator() -> Bool {
         guard loginVCDelegate?.userTextField.text?.trimmingCharacters(in: .whitespaces).count != 0 && loginVCDelegate?.passwordTextField.text?.count != 0 else {
@@ -33,6 +32,7 @@ class LoginVCHelper: LoginVCHelperProtocol {
             loginVCDelegate?.passwordFieldWarning.isHidden = false
             return false
         }
+        
         loginVCDelegate?.userTextField.layer.borderColor = UIColor.systemPurple.cgColor
         loginVCDelegate?.passwordTextField.layer.borderColor = UIColor.systemPurple.cgColor
         loginVCDelegate?.passwordFieldWarning.isHidden = true
@@ -45,7 +45,6 @@ class LoginVCHelper: LoginVCHelperProtocol {
         print("enterd for verification")
         let student = DatabaseHandler.dataBaseHandlerInstance.readDataOf(studentId: userId)
         if student?.password == password {
-            LoginVCHelper.userId = userId
             return true
         } else {
             loginVCDelegate?.loginFailPopUp()

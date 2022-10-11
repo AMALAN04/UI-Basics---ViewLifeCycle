@@ -183,7 +183,7 @@ class InstructorViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.spacing = 40
+        stackView.spacing = 50
         stackView.alignment = .center
         return stackView
     }()
@@ -242,7 +242,7 @@ class InstructorViewController: UIViewController {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register( ListTableViewCell.self, forCellReuseIdentifier: ListTableViewCell.identifier)
-        tableView.separatorStyle = .singleLine
+        tableView.separatorStyle = .none
         tableView.isScrollEnabled = false
         tableView.delegate = self
         tableView.dataSource = self
@@ -255,6 +255,7 @@ class InstructorViewController: UIViewController {
         button.setTitle("See all", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .systemPurple
+        button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(seeAllTapped), for: .touchUpInside)
         return button
     }()

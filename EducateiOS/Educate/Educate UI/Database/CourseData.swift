@@ -95,6 +95,49 @@ courseData.categoryId = \(categoryId)
         return overAllCourseDetails
     }
     
+    func readCourseDataOf(courseId: Int) -> CourseDataModel? {
+        let query = """
+SELECT
+courseId, courseName, categoryId, instructorId, description, price, courseCover, courseVideo,  instructorData.name as instructorName,courseOutlook, whatYouLearn, prerequisite
+FROM
+courseData
+INNER JOIN instructorData ON instructorData.userId = courseData.instructorId
+where
+courseData.courseId = \(courseId)
+"""
+        var statement : OpaquePointer?
+        var overAllCourseDetails: CourseDataModel?
+        if sqlite3_prepare_v2(DatabaseHandler.dataBaseHandlerInstance.db, query, -1, &statement, nil) == SQLITE_OK {
+            while sqlite3_step(statement) == SQLITE_ROW {
+                let courseId = sqlite3_column_int(statement, 0)
+                let courseName = String(cString: sqlite3_column_text(statement, 1))
+                let categoryId = sqlite3_column_int(statement, 2)
+                let instructorId = String(cString: sqlite3_column_text(statement, 3))
+                let description = String(cString: sqlite3_column_text(statement, 4))
+                let price = sqlite3_column_int(statement, 5)
+                let courseCover = String(cString: sqlite3_column_text(statement, 6))
+                let courseVideo = String(cString: sqlite3_column_text(statement, 7))
+                let instructorName = String(cString: sqlite3_column_text(statement, 8))
+                let courseOutlook = String(cString: sqlite3_column_text(statement, 9))
+                let whatYouLearn = String(cString: sqlite3_column_text(statement, 10))
+                let prerequisite = String(cString: sqlite3_column_text(statement, 11))
+                let course = Course(courseId: Int(courseId), coutseName: courseName, categoryId: Int(categoryId), instructorId: instructorId, description: description, price: Int(price))
+                course.courseCover = courseCover
+                course.courseVideo = courseVideo
+                course.courseOutlook = courseOutlook
+                course.whatYouLearn = whatYouLearn
+                course.prerequisite = prerequisite
+                let ratingDetails = purchaseDetails(courseId: Int(courseId))
+                let courseData = CourseDataModel(courseDetails: course, instructorName: instructorName, rating: ratingDetails.avgRating, noOfRaters: ratingDetails.noOfRaters, noOfStudents: ratingDetails.noOfStudents, purchasedStatus: ratingDetails.purchaseStatus)
+                overAllCourseDetails = courseData
+            }
+        } else {
+            print("Statement Not prepared!")
+        }
+        sqlite3_finalize(statement)
+        return overAllCourseDetails
+    }
+    
     func readCourseDatasOfInstructor(id: String) -> [CourseDataModel] {
         let query = """
 SELECT
@@ -156,7 +199,7 @@ courseData.instructorId = '\(id)'
             while sqlite3_step(statement) == SQLITE_ROW {
                 let rating = sqlite3_column_int(statement, 0)
                 let studentId = String(cString: sqlite3_column_text(statement, 1))
-                if studentId == LoginVCHelper.userId {
+                if studentId == UserDefaults.standard.string(forKey: "UserId") {
                     purchasedStatus = true
                 }
                 if rating == 0 {

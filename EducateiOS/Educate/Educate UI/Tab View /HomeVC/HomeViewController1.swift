@@ -90,12 +90,14 @@ Choose from 204,000 online video courses with new additions published every mont
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableViewLoader.loadCourseDataIn(homeViewController: self)
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchData), name: NSNotification.Name("UPDATE_REVIEW"), object: nil)
+//        tableViewLoader.loadCourseDataIn(homeViewController: self)
+        fetchData()
+        tableView.reloadData()
         title = "Home"
         view.backgroundColor = .systemBackground
         setNavigationBarColour()
         viewConstraints()
-        tableView.reloadData()
     }
     
     override func viewWillLayoutSubviews() {
@@ -107,6 +109,14 @@ Choose from 204,000 online video courses with new additions published every mont
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = false
         self.navigationItem.title = "Home"
+    }
+    
+    @objc func fetchData() {
+        categoryWiseCourseData = []
+        tableViewLoader.loadCourseDataIn(homeViewController: self)
+        tableView.reloadData()
+        print("reloaded in home view")
+        
     }
     
     func setDelegate() {
@@ -124,7 +134,6 @@ Choose from 204,000 online video courses with new additions published every mont
     }
     
     func viewConstraints() {
-        
         view.addSubview(tableView)
         let constraints = [
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -137,8 +146,8 @@ Choose from 204,000 online video courses with new additions published every mont
     
     func moveOnProductDetails(tableIndex: Int, collectionIndex: Int) {
         let rootVC = CourseDisplayViewController()
-        rootVC.courseData = (categoryWiseCourseData[tableIndex])[collectionIndex]
-        
+        rootVC.courseId = (categoryWiseCourseData[tableIndex])[collectionIndex].courseDetails.courseId
+        rootVC.instructorId = (categoryWiseCourseData[tableIndex])[collectionIndex].courseDetails.instructorId
         navigationController?.pushViewController(rootVC, animated: true)
         print("\(tableIndex)")
         
@@ -148,6 +157,7 @@ Choose from 204,000 online video courses with new additions published every mont
         let rootVC = CourseListViewController()
         let section = button.tag
         rootVC.titleText =  Helper.sectionHeaders[section]
+        rootVC.category = Helper.categoryProvider(categoryId: button.tag + 1)
         rootVC.courseData =  categoryWiseCourseData[section]
         rootVC.courseDataSearchResult =  rootVC.courseData
         rootVC.filterData = rootVC.courseDataSearchResult
@@ -176,7 +186,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         }
         return cell
     }
-    
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()

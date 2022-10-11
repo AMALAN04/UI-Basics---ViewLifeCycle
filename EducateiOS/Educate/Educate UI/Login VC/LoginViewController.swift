@@ -212,9 +212,8 @@ class LoginViewController: UIViewController,  LoginViewControllerDelegate {
     @objc func keyboardWillShow(sender: NSNotification) {
         //        print("Key board will show")
         if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-//            let traitcollection = UIScreen.main.traitCollection
+            //            let traitcollection = UIScreen.main.traitCollection
             self.view.frame.origin.y = -keyboardSize.height / 2
-            
         }
     }
     
@@ -340,7 +339,7 @@ class LoginViewController: UIViewController,  LoginViewControllerDelegate {
             UserDefaults.standard.set(userTextField.text, forKey: "UserId")
             let rootView = MainTabBarController()
             navigationController?.pushViewController( rootView, animated: true)
-        } 
+        }
     }
     
 }
@@ -366,7 +365,7 @@ extension LoginViewController: UITextFieldDelegate {
                 passwordFieldWarning.isHidden = false
             }
         } else {
-
+            
             if textField == userTextField {
                 userTextField.layer.borderColor = UIColor.systemPurple.cgColor
                 userFieldWarning.isHidden =  true

@@ -11,4 +11,5 @@ protocol PurchaseDataProtocol {
     func createPurchaseDataTable()
     func insertDataOf(purchase: PurchaseTemplate) -> Bool
     func reviewDetails(courseId: Int, userId: String ) -> (myReview: ReviewDataModel?, othersReview: [ReviewDataModel])
+    func updateReviewOf(courseId: Int, studentId: String, as review: String, and rating: Int) -> Bool
 }

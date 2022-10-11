@@ -12,6 +12,20 @@ struct CacheImage {
     static let chacheImages = NSCache<AnyObject,AnyObject>()
 }
 
+enum AIEdge:Int {
+    case
+    Top,
+    Left,
+    Bottom,
+    Right,
+    Top_Left,
+    Top_Right,
+    Bottom_Left,
+    Bottom_Right,
+    All,
+    None
+}
+
 extension UIImageView {
     func load(urlString : String) {
         lazy var activityIndicator : UIActivityIndicatorView = {
@@ -132,6 +146,52 @@ extension UIView {
     }
 }
 
+extension UIView {
+        
+    func applyShadowWithCornerRadius(color:UIColor, opacity:Float, radius: CGFloat, edge:AIEdge, shadowSpace:CGFloat, cornerRadius: CGFloat)    {
+
+        var sizeOffset:CGSize = CGSize.zero
+        
+        switch edge {
+        case .Top:
+            sizeOffset = CGSize(width: 0, height: -shadowSpace)
+        case .Left:
+            sizeOffset = CGSize(width: -shadowSpace, height: 0)
+        case .Bottom:
+            sizeOffset = CGSize(width: 0, height: shadowSpace)
+        case .Right:
+            sizeOffset = CGSize(width: shadowSpace, height: 0)
+            
+            
+        case .Top_Left:
+            sizeOffset = CGSize(width: -shadowSpace, height: -shadowSpace)
+        case .Top_Right:
+            sizeOffset = CGSize(width: shadowSpace, height: -shadowSpace)
+        case .Bottom_Left:
+            sizeOffset = CGSize(width: -shadowSpace, height: shadowSpace)
+        case .Bottom_Right:
+            sizeOffset = CGSize(width: shadowSpace, height: shadowSpace)
+            
+            
+        case .All:
+            sizeOffset = CGSize(width: 0, height: 0)
+        case .None:
+            sizeOffset = CGSize.zero
+        }
+
+        self.layer.cornerRadius = cornerRadius
+        self.layer.masksToBounds = true
+
+        self.layer.shadowColor = color.cgColor
+        self.layer.shadowOpacity = opacity
+        self.layer.shadowOffset = sizeOffset
+        self.layer.shadowRadius = radius
+        self.layer.masksToBounds = false
+
+        self.layer.shadowPath = UIBezierPath(roundedRect:self.bounds, cornerRadius:self.layer.cornerRadius).cgPath
+    }
+}
+
 extension TimeZone {
     static let gmt = TimeZone(secondsFromGMT: 0)!
 }
@@ -176,4 +236,15 @@ extension Date {
     var longDateTime: String { localizedDescription(date: .long, time: .long) }
     var mediumDateTime: String { localizedDescription(date: .medium, time: .medium) }
     var shortDateTime: String { localizedDescription(date: .short, time: .short) }
+}
+
+
+extension UIView {
+    func roundCorners(_ corners: UIRectCorner, radius: CGFloat) {
+         let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+         let mask = CAShapeLayer()
+         mask.path = path.cgPath
+         self.layer.mask = mask
+    }
+
 }

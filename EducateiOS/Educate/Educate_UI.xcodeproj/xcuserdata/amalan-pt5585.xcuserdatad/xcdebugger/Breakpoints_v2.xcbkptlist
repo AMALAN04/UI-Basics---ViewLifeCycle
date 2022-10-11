@@ -14,8 +14,8 @@
             filePath = "Educate UI/Database/DatabaseHandler.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
             landmarkName = "DatabaseHandler"
             landmarkType = "3">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "Educate UI/Database/DatabaseHandler.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "56"
-            endingLineNumber = "56"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
             landmarkName = "loadStudentData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "Educate UI/Database/DatabaseHandler.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
             landmarkName = "loadStudentData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "Educate UI/Database/DatabaseHandler.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
             landmarkName = "loadInstructorData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -290,6 +290,54 @@
             endingLineNumber = "172"
             landmarkName = "viewConstraints()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CB5303CE-A099-4129-AB2C-723FFBC8F461"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Educate UI/Helper/Extension.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "12"
+            endingLineNumber = "12"
+            landmarkName = "CacheImage"
+            landmarkType = "14">
+            <Locations>
+               <Location
+                  uuid = "CB5303CE-A099-4129-AB2C-723FFBC8F461 - f3209f62eecf6a93"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "one-time initialization function for chacheImages"
+                  moduleName = "Educate_UI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/amalan-pt5585/Documents/EducateiOS/Educate/Educate%20UI/Helper/Extension.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "12"
+                  endingLineNumber = "12"
+                  offsetFromSymbolStart = "7">
+               </Location>
+               <Location
+                  uuid = "CB5303CE-A099-4129-AB2C-723FFBC8F461 - 30502b02b54ed3a0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Educate_UI.CacheImage.chacheImages.unsafeMutableAddressor : __C.NSCache&lt;Swift.AnyObject, Swift.AnyObject&gt;"
+                  moduleName = "Educate_UI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/amalan-pt5585/Documents/EducateiOS/Educate/Educate%20UI/Helper/Extension.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "12"
+                  endingLineNumber = "12"
+                  offsetFromSymbolStart = "4">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

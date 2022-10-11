@@ -8,6 +8,12 @@
 import Foundation
 
 class CourseListVCHelper: CourseListVCHelperProtocol {
+    
+    func readCourseDatasOf(category: Category) -> [CourseDataModel] {
+        return DatabaseHandler.dataBaseHandlerInstance.readCourseDatasOf(category: category)
+    }
+    
+    
     func applyFilter(filter: Filters, in courseData: [CourseDataModel]) -> [CourseDataModel] {
         switch filter {
         case .priceLowToHigh:

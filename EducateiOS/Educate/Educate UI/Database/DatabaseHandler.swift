@@ -19,14 +19,6 @@ class DatabaseHandler: DbHandlerProtocol {
     private var purchaseData: PurchaseData
     
     private init() {
-//        let filePath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathExtension("EducateDataBase.sqlite")
-//        
-//        if sqlite3_open(filePath.path, &db) != SQLITE_OK {
-//            print("There is error in creating DB")
-//        }else {
-//            print("Database has been created with path \(filePath)")
-//        }
-
         studentData = StudentData()
         instructorData = InstructorData()
         categoryData = CategoryData()
@@ -133,11 +125,18 @@ class DatabaseHandler: DbHandlerProtocol {
         var purchase5 = PurchaseTemplate(courseId: 1, instructorId: "krish", studentId: "ravi", price: 100, date: Date().shortDateTime)
         purchase5.rating = 2
         purchase5.comment = "Need to be improved"
+        
+        var purchase6 = PurchaseTemplate(courseId: 5, instructorId: "krish", studentId: "demo", price: 100, date: Date().shortDateTime)
+        var purchase7 = PurchaseTemplate(courseId: 5, instructorId: "krish", studentId: "ravi", price: 100, date: Date().shortDateTime)
+        purchase7.rating = 2
+        purchase7.comment = "Need to be improved"
         print("purchase loaded: \(purchaseData.insertDataOf(purchase: purchase1))")
         print("purchase loaded: \(purchaseData.insertDataOf(purchase: purchase2))")
         print("purchase loaded: \(purchaseData.insertDataOf(purchase: purchase3))")
         print("purchase loaded: \(purchaseData.insertDataOf(purchase: purchase4))")
         print("purchase loaded: \(purchaseData.insertDataOf(purchase: purchase5))")
+        print("purchase loaded: \(purchaseData.insertDataOf(purchase: purchase6))")
+        print("purchase loaded: \(purchaseData.insertDataOf(purchase: purchase7))")
     }
     
     
@@ -189,12 +188,20 @@ class DatabaseHandler: DbHandlerProtocol {
         return courseData.readCourseDatasOfInstructor(id: id)
     }
     
+    func readCourseDataOf(courseId: Int) -> CourseDataModel? {
+        return courseData.readCourseDataOf(courseId: courseId)
+    }
+    
     func createPurchaseDataTable() {
         purchaseData.createPurchaseDataTable()
     }
     
     func insertDataOf(purchase: PurchaseTemplate) -> Bool {
         return purchaseData.insertDataOf(purchase: purchase)
+    }
+    
+    func updateReviewOf(courseId: Int, studentId: String, as review: String, and rating: Int) -> Bool {
+        return purchaseData.updateReviewOf(courseId: courseId, studentId: studentId, as: review, and: rating)
     }
     
     func reviewDetails(courseId: Int, userId: String ) -> (myReview: ReviewDataModel?, othersReview: [ReviewDataModel]) {

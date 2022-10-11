@@ -77,7 +77,7 @@ class  HomeTableViewCell: UITableViewCell {
         }
         cell.price.text = "₹\(cell.coursePrice)"
     }
-
+    
 }
 
 extension HomeTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -87,7 +87,7 @@ extension HomeTableViewCell: UICollectionViewDelegate, UICollectionViewDataSourc
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if noOfItemsInSection < smallestCourseCollectionSize {
-             smallestCourseCollectionSize =  noOfItemsInSection
+            smallestCourseCollectionSize =  noOfItemsInSection
         }
         return smallestCourseCollectionSize
     }
@@ -101,7 +101,6 @@ extension HomeTableViewCell: UICollectionViewDelegate, UICollectionViewDataSourc
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeCollectionViewCell.identifier, for: indexPath) as! HomeCollectionViewCell
         cell.backgroundColor = .clear
-        print(courseData.count)
         loadData(courseDetails: courseData[indexPath.item], cell: cell)
         return cell
     }

@@ -9,9 +9,11 @@ import UIKit
 
 class CourseDisplayViewController: UIViewController {
     var courseData: CourseDataModel?
+    var courseId: Int?
+    var instructorId: String?
     var instructorDataModel: InstructorDataModel?
     var courseDisplayVCHelper = CourseDisplayVCHelper()
-    
+
     var compactConstraints: [NSLayoutConstraint] = []
     var regularConstraints: [NSLayoutConstraint] = []
     
@@ -50,7 +52,7 @@ class CourseDisplayViewController: UIViewController {
         let textLabel = UILabel()
         let screenHeight = UIScreen.main.fixedCoordinateSpace.bounds.height
         textLabel.translatesAutoresizingMaskIntoConstraints = false
-        textLabel.textColor = .secondaryLabel
+        textLabel.textColor = .label
         textLabel.textAlignment = .justified
         textLabel.font = .systemFont(ofSize: 18)
         textLabel.text = "Swift for life"
@@ -406,6 +408,18 @@ class CourseDisplayViewController: UIViewController {
         return stackView
     }()
     
+    lazy var overAllInstructorView: UIView = {
+        let displayView = UILabel()
+        displayView.translatesAutoresizingMaskIntoConstraints = false
+        displayView.backgroundColor = .systemBackground
+        displayView.clipsToBounds = true
+        displayView.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(viewProfileTapped))
+        displayView.layer.cornerRadius = 10
+        displayView.addGestureRecognizer(tap)
+        return displayView
+    }()
+    
     lazy var instructorRatingStack: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -484,8 +498,9 @@ class CourseDisplayViewController: UIViewController {
         view.backgroundColor = .systemBackground
         navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.sizeToFit()
-        instructorDataModel = courseDisplayVCHelper.fetchInstructorDetails(instructorId: (courseData?.courseDetails.instructorId)!)
-        loadData()
+        fetchData()
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchData), name: NSNotification.Name("UPDATE_REVIEW"), object: nil)
+        dropShadowIfNeeded()
         viewConstraints()
         loadConstraints()
         layoutTrait(traitCollection: UIScreen.main.traitCollection)
@@ -495,6 +510,16 @@ class CourseDisplayViewController: UIViewController {
         super.viewWillLayoutSubviews()
         courseCoverImage.layer.cornerRadius = view.frame.width * 0.02
         courseCoverImageHeight?.constant = view.frame.width / 2
+    }
+    
+    @objc func fetchData() {
+        guard let instructorId = instructorId, let courseId = courseId else {
+            return
+        }
+        instructorDataModel = courseDisplayVCHelper.fetchInstructorDetails(instructorId: instructorId)
+            courseData = courseDisplayVCHelper.courseDetails(courseId: courseId)
+        loadData()
+        sendNotificationForUpdateReview()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -509,7 +534,15 @@ class CourseDisplayViewController: UIViewController {
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
+        dropShadowIfNeeded()
         layoutTrait(traitCollection: traitCollection)
+    }
+    
+    func dropShadowIfNeeded() {
+//        overAllInstructorView.addShadow(offset: CGSize.init(width: 0, height: 4), color: UIColor.label, radius: 2.0, opacity: 0.35)
+        DispatchQueue.main.async {
+            self.overAllInstructorView.applyShadowWithCornerRadius(color: .gray, opacity: 0.35, radius: 5, edge: AIEdge.All, shadowSpace: 15, cornerRadius: 10)
+        }
     }
     
     lazy var contentView: UIView = {
@@ -522,7 +555,6 @@ class CourseDisplayViewController: UIViewController {
         guard let courseData = courseData, let instructorDataModel = instructorDataModel else {
             return
         }
-        print("no of courses \(instructorDataModel.instructorDetails.aboutMe)")
         let coursePrice =  round(Float((courseData.courseDetails.price) * 100) / 100.0)
         let courseRating = courseData.rating
         let instructorRating = instructorDataModel.instructorRating
@@ -558,7 +590,6 @@ class CourseDisplayViewController: UIViewController {
     }
     
     func loadConstraints() {
-        print(contentStack.frame.width / 2)
         let screenWidth = UIScreen.main.bounds.width
         compactConstraints = [
             instructorProfileStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -579,7 +610,7 @@ class CourseDisplayViewController: UIViewController {
         contentStack.addArrangedSubview(whatYouLearnStack)
         contentStack.addArrangedSubview(requirementStack)
         contentStack.addArrangedSubview(descriptionStack)
-        contentStack.addArrangedSubview(overAllInstructorStack)
+        contentStack.addArrangedSubview(overAllInstructorView)
         
         basicCourseDataStack.addArrangedSubview(courseCoverImage)
         basicCourseDataStack.addArrangedSubview(courseLabelStack)
@@ -617,12 +648,14 @@ class CourseDisplayViewController: UIViewController {
         descriptionStack.addArrangedSubview(descriptionLabel)
         descriptionStack.addArrangedSubview(_description)
         
+        overAllInstructorView.addSubview(overAllInstructorStack)
+        
         overAllInstructorStack.addArrangedSubview(instructorLabel)
         overAllInstructorStack.addArrangedSubview(instructorProfileStack)
         
         instructorProfileStack.addArrangedSubview(instructorProfileImage)
         instructorProfileStack.addArrangedSubview(instructorDetailsStack)
-        instructorProfileStack.addArrangedSubview(viewProfile)
+//        instructorProfileStack.addArrangedSubview(viewProfile)
         
         instructorDetailsStack.addArrangedSubview(instructorNameLabel)
         instructorDetailsStack.addArrangedSubview(instructorRatingStack)
@@ -649,15 +682,18 @@ class CourseDisplayViewController: UIViewController {
             contentStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             contentStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
             contentStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
-            contentStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            contentStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
+            
+            overAllInstructorView.topAnchor.constraint(equalTo: overAllInstructorStack.topAnchor, constant: -10),
+            overAllInstructorView.leadingAnchor.constraint(equalTo: overAllInstructorStack.leadingAnchor, constant: -4),
+            overAllInstructorView.bottomAnchor.constraint(equalTo: overAllInstructorStack.bottomAnchor, constant: 10),
+            overAllInstructorView.trailingAnchor.constraint(equalTo: overAllInstructorStack.trailingAnchor, constant: 4),
+            
             
             instructorProfileImage.widthAnchor.constraint(equalToConstant: CGFloat(profileImageDimensions)),
             instructorProfileImage.heightAnchor.constraint(equalToConstant: CGFloat(profileImageDimensions)),
             
             //            instructorProfileStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
-            viewProfile.widthAnchor.constraint(equalToConstant: 200),
-            viewProfile.heightAnchor.constraint(equalToConstant: 40),
     
         ]
         NSLayoutConstraint.activate(constraints)
@@ -703,8 +739,14 @@ class CourseDisplayViewController: UIViewController {
         rootVC.courseId = courseData?.courseDetails.courseId
         rootVC.courseRating = courseData?.rating
         rootVC.courseName = courseData?.courseDetails.courseName
+        rootVC.coursePurchased = courseData?.purchasedStatus ?? false
         navigationController?.pushViewController(rootVC, animated: true)
     }
+    
+    private func sendNotificationForUpdateReview() {
+           print("Sending Data to Notification Center")
+        NotificationCenter.default.post(name: NSNotification.Name("UPDATE_HEADER"), object: nil, userInfo: ["rating": courseData?.rating ?? 0])
+       }
     
 }
 

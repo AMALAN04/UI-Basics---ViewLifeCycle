@@ -24,6 +24,7 @@
 		B63132EA28DDAEB20084B9F9 /* CourseDataProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63132E928DDAEB20084B9F9 /* CourseDataProtocol.swift */; };
 		B63132EC28DDB0010084B9F9 /* PurchaseDataProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63132EB28DDB0010084B9F9 /* PurchaseDataProtocol.swift */; };
 		B636C0D628DF7959003A9E50 /* FiveStarHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B636C0D528DF7959003A9E50 /* FiveStarHelper.swift */; };
+		B63C167D28F43E3D001560ED /* AddReviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63C167C28F43E3D001560ED /* AddReviewViewController.swift */; };
 		B6479B6528E757290030682B /* HomeVCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6479B6428E757290030682B /* HomeVCDelegate.swift */; };
 		B6479B6728E757DC0030682B /* HomeVCHelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6479B6628E757DC0030682B /* HomeVCHelperProtocol.swift */; };
 		B64A0B3E28E44B2700D3E5E2 /* HomeViewController1.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64A0B3D28E44B2700D3E5E2 /* HomeViewController1.swift */; };
@@ -85,6 +86,7 @@
 		B63132E928DDAEB20084B9F9 /* CourseDataProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDataProtocol.swift; sourceTree = "<group>"; };
 		B63132EB28DDB0010084B9F9 /* PurchaseDataProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDataProtocol.swift; sourceTree = "<group>"; };
 		B636C0D528DF7959003A9E50 /* FiveStarHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiveStarHelper.swift; sourceTree = "<group>"; };
+		B63C167C28F43E3D001560ED /* AddReviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReviewViewController.swift; sourceTree = "<group>"; };
 		B6479B6428E757290030682B /* HomeVCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVCDelegate.swift; sourceTree = "<group>"; };
 		B6479B6628E757DC0030682B /* HomeVCHelperProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVCHelperProtocol.swift; sourceTree = "<group>"; };
 		B64A0B3D28E44B2700D3E5E2 /* HomeViewController1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController1.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 			isa = PBXGroup;
 			children = (
 				B6241DD928EFF5CF00E1E5F1 /* ReviewVCHelper.swift */,
+				B63C167C28F43E3D001560ED /* AddReviewViewController.swift */,
 				B693F5CA28EF0CF90094D2A9 /* ReviewViewController.swift */,
 				B693F5CC28EF137F0094D2A9 /* ReviewTableViewCell.swift */,
 			);
@@ -395,6 +398,7 @@
 				B63132D928DD70510084B9F9 /* CourseData.swift in Sources */,
 				B669563428DC8E2500690C6E /* InstructorData.swift in Sources */,
 				B63132DD28DD86EA0084B9F9 /* PurchaseData.swift in Sources */,
+				B63C167D28F43E3D001560ED /* AddReviewViewController.swift in Sources */,
 				B6B538A728DCA86C00EFD9B7 /* CategoryData.swift in Sources */,
 				B6A8DFDF28EADB5C002FCFA6 /* CourseDisplayVCHelper.swift in Sources */,
 				B63132EC28DDB0010084B9F9 /* PurchaseDataProtocol.swift in Sources */,

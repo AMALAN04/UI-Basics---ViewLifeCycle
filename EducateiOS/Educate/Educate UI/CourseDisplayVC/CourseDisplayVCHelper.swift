@@ -11,4 +11,8 @@ class CourseDisplayVCHelper {
     func fetchInstructorDetails(instructorId: String) -> InstructorDataModel? {
        return DatabaseHandler.dataBaseHandlerInstance.readDataOf(instructorId: instructorId)
     }
+    
+    func courseDetails(courseId: Int) -> CourseDataModel? {
+        return DatabaseHandler.dataBaseHandlerInstance.readCourseDataOf(courseId: courseId)
+    }
 }

@@ -168,6 +168,7 @@ class ReviewTableViewCell: UITableViewCell {
         }
         dropShadowIfNeeded()
     }
+    
 
 }
 

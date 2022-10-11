@@ -9,4 +9,5 @@ import Foundation
 
 protocol CourseListVCHelperProtocol {
     func applyFilter(filter: Filters, in courseData: [CourseDataModel]) -> [CourseDataModel]
+    func readCourseDatasOf(category: Category) -> [CourseDataModel] 
 }

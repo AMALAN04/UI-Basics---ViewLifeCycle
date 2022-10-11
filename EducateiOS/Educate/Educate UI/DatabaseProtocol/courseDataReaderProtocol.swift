@@ -10,4 +10,5 @@ import Foundation
 protocol courseDataReaderProtocol {
     func readCourseDatasOf(category: Category) -> [CourseDataModel]
     func readCourseDatasOfInstructor(id: String) -> [CourseDataModel]
+    func readCourseDataOf(courseId: Int) -> CourseDataModel? 
 }
